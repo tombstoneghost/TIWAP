@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <!--Custom CSS-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}" type="text/css">
+
+    <!--Bootstrap CSS-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+    <!--Bootstrap JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+    <title>TIWAF</title>
+</head>
+<body>
+    <div class="text-center" style="background-color: darkslategrey; color: #fff; padding: 10px">
+        <h1>TIWAP</h1>
+        <h6 class="display-6" style="font-size: 32px">Totally Insecure Web Application Project</h6>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <ul class="nav navbar-nav mb-2" style="float: right; margin-left: auto">
+            <li class="nav-item">
+                <a class="nav-link active" href="/dashboard">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/settings">Settings</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/info">Information</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Signout</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="row mt-5" style="margin-left: 50px">
+        <div class="col-sm-3">
+            <div class="btn-group-vertical mb-2" style="width: 250px">
+                <button class="btn btn-success">
+                    <a>SQL Injection</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>Blind SQL Injection</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>NoSQL Injection</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>Command Injection</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>Broken Authentication</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>Sensitive Data Exposure</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>XML External Entities</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>Security Misconfiguration</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>Reflected XSS</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>Stored XSS</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>DOM XSS</a>
+                </button>
+            </div>
+            <div class="btn-group-vertical mb-2" style="width: 250px">
+                <button class="btn btn-success">
+                    <a>Buffer Overflow</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>Improper Certificate Validation</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>Hardcoded Credentials</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>Insecure File Upload</a>
+                </button>
+            </div>
+            <div class="btn-group-vertical mb-4" style="width: 250px">
+                <button class="btn btn-success">
+                    <a>Brute Force</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>Directory Traversal</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>CSRF</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>SSRF</a>
+                </button>
+                <button class="btn btn-success">
+                    <a>SSTI</a>
+                </button>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

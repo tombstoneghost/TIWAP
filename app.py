@@ -1,15 +1,9 @@
 # Imports
 from flask import Flask, render_template, request, session, redirect, url_for
-from passlib.hash import sha256_crypt
 from functools import wraps
 from helper.jwt import JWT
+from helper.db_manager import DBManager
 
-import sqlite3
-
-
-# Initialize Database
-conn = sqlite3.connect('TIWAF.db', check_same_thread=False)
-cur = conn.cursor()
 
 # Initialize Flask
 app = Flask(__name__)
@@ -17,6 +11,7 @@ app.secret_key = 'l0G1n_53cR37_k3y'
 
 # JWT
 jwt = JWT()
+dbm = DBManager()
 
 
 @app.route('/')
@@ -33,22 +28,13 @@ def login():
     if username == '' and password == '':
         return render_template('index.html', msg='Fields Empty')
 
-    result = cur.execute("SELECT username, password FROM users WHERE username = ?", (username, ))
+    if dbm.check_login(username=username, password=password):
+        session['logged_in'] = True
+        session['auth'] = jwt.encode_auth_token(username)
 
-    if type(result) != 'NoneType':
-        data = cur.fetchone()
-        password_db = data[1]
-
-        # Check Passwords
-        if sha256_crypt.verify(password, password_db):
-            session['logged_in'] = True
-            session['auth'] = jwt.encode_auth_token(username)
-
-            return redirect(url_for('dashboard'))
-        else:
-            return render_template('index.html', msg='Invalid Credentials')
+        return redirect(url_for('dashboard'))
     else:
-        return render_template('index.html', msg='Username not found')
+        return render_template('index.html', msg='Invalid Credentials')
 
     return render_template('index.html')
 

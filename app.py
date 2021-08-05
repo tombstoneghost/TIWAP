@@ -16,6 +16,8 @@ dbm = DBManager()
 
 @app.route('/')
 def index():
+    if session and session['logged_in']:
+        return redirect(url_for('dashboard'))
     return render_template('index.html')
 
 
@@ -53,6 +55,7 @@ def is_logged(f):
 
 # Logout
 @app.route('/logout')
+@is_logged
 def logout():
     session.clear()
 
@@ -86,6 +89,28 @@ def sql_injection_low():
     result = sqli.sqli_low(username=username, password=password)
 
     return render_template('vulnerabilities/sql-injection.html', msg=result)
+
+
+# Blind SQL Injection
+# Index Page
+@app.route('/blind-sql-injection')
+@is_logged
+def blind_sql_injection_index():
+    return render_template('vulnerabilities/blind-sql-injection.html')
+
+
+# Route for Low Vulnerability
+@app.route('/blind-injection-low', methods=['GET', 'POST'])
+@is_logged
+def blind_sql_injection_low():
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    sqli = SQLi
+
+    result = sqli.blind_sqli_low(username=username, password=password)
+
+    return render_template('vulnerabilities/blind-sql-injection.html', msg=result)
 
 
 # Execute Main

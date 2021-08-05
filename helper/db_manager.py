@@ -12,6 +12,15 @@ class DBManager:
     def get_db_connection(self):
         return self.conn
 
+    def check_user(self, username):
+        result = self.cur.execute("SELECT username FROM users WHERE username = ?", (username,))
+
+        if type(result) != 'NoneType':
+            if self.cur.fetchone() is not None:
+                return True
+
+        return False
+
     def check_login(self, username, password):
         result = self.cur.execute("SELECT username, password FROM users WHERE username = ?", (username,))
 

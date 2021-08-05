@@ -6,6 +6,9 @@ html, body {
     overflow-x: hidden;
 }
 
-.login {
-    margin-top: 150px;
+.vuln {
+    width: 200px;
+    height: 150px;
+    margin: 25px;
+    padding: 25px;
 }

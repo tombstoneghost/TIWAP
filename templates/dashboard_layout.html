@@ -12,7 +12,7 @@
     <!--Bootstrap JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 
-    <title>TIWAF</title>
+    <title>TIWAP</title>
 </head>
 <body>
     <div class="text-center" style="background-color: darkslategrey; color: #fff; padding: 10px">
@@ -35,79 +35,9 @@
             </li>
         </ul>
     </nav>
-    <div class="row mt-5" style="margin-left: 50px">
-        <div class="col-sm-3">
-            <div class="btn-group-vertical mb-2" style="width: 250px">
-                <button class="btn btn-success vuln-link">
-                    <a href="/sql-injection" style="text-decoration: none; color: #ffffff">SQL Injection</a>
-                </button>
-                <button class="btn btn-success">
-                    <a href="/blind-sql-injection" style="text-decoration: none; color: #ffffff">Blind SQL Injection</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>NoSQL Injection</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>Command Injection</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>Broken Authentication</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>Sensitive Data Exposure</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>XML External Entities</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>Security Misconfiguration</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>Reflected XSS</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>Stored XSS</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>DOM XSS</a>
-                </button>
-            </div>
-            <div class="btn-group-vertical mb-2" style="width: 250px">
-                <button class="btn btn-success">
-                    <a>Buffer Overflow</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>Improper Certificate Validation</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>Hardcoded Credentials</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>Insecure File Upload</a>
-                </button>
-            </div>
-            <div class="btn-group-vertical mb-4" style="width: 250px">
-                <button class="btn btn-success">
-                    <a>Brute Force</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>Directory Traversal</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>CSRF</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>SSRF</a>
-                </button>
-                <button class="btn btn-success">
-                    <a>SSTI</a>
-                </button>
-            </div>
-        </div>
-        <div class="col-sm-9">
-            {% block content %}
-            {% endblock %}
-        </div>
+    <div>
+        {% block content %}
+        {% endblock %}
     </div>
 </body>
 </html>

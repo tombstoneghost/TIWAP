@@ -1,5 +1,211 @@
-{% extends 'dashboard_layout.html' %}
+{% extends 'layout.html' %}
 {% block content %}
-    <div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <ul class="nav navbar-nav mb-2" style="float: right; margin-left: auto; margin-right: 2%">
+            <li class="nav-item">
+                <a class="nav-link active" href="/dashboard">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/settings">Settings</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/info">Information</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Signout</a>
+            </li>
+        </ul>
+    </nav>
+    <div class="container" style="margin-bottom: 5%">
+        <div class="row">
+            <div class="col">
+                <a href="/sql-injection" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 50px 5px 15px 0px; padding-top: 50px;">SQL Injection</a>
+            </div>
+            <div class="col">
+                <a href="/blind-sql-injection" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 50px 5px 15px 0px; padding-top: 50px;">Blind SQL Injection</a>
+            </div>
+            <div class="col">
+                <a href="/no-sql-injection" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 50px 5px 15px 0px; padding-top: 50px;">No SQL Injection</a>
+            </div>
+            <div class="col">
+                <a href="/cmd-injection" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 50px 5px 15px 0px; padding-top: 50px;">Command Injection</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="/broken-auth" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 15px 0px; padding-top: 50px;">Broken Authentication</a>
+            </div>
+            <div class="col">
+                <a href="/sensitive-data-exposure" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 15px 0px; padding-top: 50px;">Sensitive Data Exposure</a>
+            </div>
+            <div class="col">
+                <a href="/xxe" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 15px 0px; padding-top: 50px;">XML External Entities</a>
+            </div>
+            <div class="col">
+                <a href="/security-misconfig" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 15px 0px; padding-top: 25px;">Security Misconfiguration</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="/reflected-xss" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 15px 0px; padding-top: 50px;">Reflected XSS</a>
+            </div>
+            <div class="col">
+                <a href="/stored-xss" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 15px 0px; padding-top: 50px;">Stored XSS</a>
+            </div>
+            <div class="col">
+                <a href="/dom-xss" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 15px 0px; padding-top: 50px;">DOM Based XSS</a>
+            </div>
+            <div class="col">
+                <a href="/buffer-overflow" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 15px 0px; padding-top: 50px;">Buffer Overflow</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="/improper-cert-valid" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 15px 0px; padding-top: 25px;">Improper Certificate Validation</a>
+            </div>
+            <div class="col">
+                <a href="/hardcoded-creds" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 15px 0px; padding-top: 50px;">Hardcoded Credentials</a>
+            </div>
+            <div class="col">
+                <a href="/insecure-file-up" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 15px 0px; padding-top: 50px;">Insecure File Upload</a>
+            </div>
+            <div class="col">
+                <a href="/brute-force" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 15px 0px; padding-top: 50px;">Brute Force</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <a href="/directory-traversal" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 25px 0px; padding-top: 50px;">Directory Traversal</a>
+            </div>
+            <div class="col">
+                <a href="/csrf" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 25px 0px; padding-top: 50px;">CSRF</a>
+            </div>
+            <div class="col">
+                <a href="/ssrf" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 25px 0px; padding-top: 50px;">SSRF</a>
+            </div>
+            <div class="col">
+                <a href="/ssti" class="btn text-center"
+                   style="text-decoration: none;
+                   color: #ffffff;
+                   background-color: darkslategrey;
+                   width: 300px; font-size: 25px;
+                   height: 150px;
+                   margin: 25px 5px 25px 0px; padding-top: 50px;">SSTI</a>
+            </div>
+        </div>
     </div>
 {% endblock %}

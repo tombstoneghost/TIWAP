@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, session, redirect, url_for, f
 from functools import wraps
 from helper.jwt import JWT
 from helper.db_manager import DBManager
+from helper.mongodb_manager import MongoDBManager
 from vulnerabilities import SQLi
 
 # Initialize Flask
@@ -12,6 +13,7 @@ app.secret_key = 'l0G1n_53cR37_k3y'
 # JWT
 jwt = JWT()
 dbm = DBManager()
+mongo_dbm = MongoDBManager()
 
 
 @app.route('/')
@@ -81,6 +83,9 @@ def sql_injection_index():
 @app.route('/injection-low', methods=['GET', 'POST'])
 @is_logged
 def sql_injection_low():
+    if len(request.form) < 1:
+        return redirect(url_for('sql_injection_index'))
+
     username = request.form.get('username')
     password = request.form.get('password')
 
@@ -103,6 +108,9 @@ def blind_sql_injection_index():
 @app.route('/blind-injection-low', methods=['GET', 'POST'])
 @is_logged
 def blind_sql_injection_low():
+    if len(request.form) < 1:
+        return redirect(url_for('blind_sql_injection_index'))
+
     username = request.form.get('username')
     password = request.form.get('password')
 
@@ -111,6 +119,54 @@ def blind_sql_injection_low():
     result = sqli.blind_sqli_low(username=username, password=password)
 
     return render_template('vulnerabilities/blind-sql-injection.html', msg=result)
+
+
+# NoSQL Injection
+# Index Page
+@app.route('/no-sql-injection')
+@is_logged
+def no_sql_injection():
+    data = mongo_dbm.get_data_all()
+
+    return render_template('vulnerabilities/no-sql-injection.html', data=data)
+
+
+# Route for Low Vulnerability
+@app.route('/no-sql-injection-low', methods=['POST', 'GET'])
+@is_logged
+def no_sql_injection_low():
+    if len(request.form) < 1:
+        return redirect(url_for('no_sql_injection'))
+
+    query = request.form.get('car')
+
+    data = mongo_dbm.get_data_filtered(query)
+
+    print(data)
+
+    return render_template('vulnerabilities/no-sql-injection.html')
+
+
+# Reflected XSS
+# Index Page
+@app.route('/reflected-xss')
+@is_logged
+def reflected_xss():
+    return render_template('vulnerabilities/reflected-xss.html')
+
+
+# Route for Low Vulnerability
+@app.route('/reflected-xss-low', methods=['POST', 'GET'])
+@is_logged
+def reflected_xss_low():
+    if len(request.form) < 1:
+        return redirect(url_for('reflected_xss'))
+
+    entry = request.form.get('input')
+
+    msg = "Hi!" + entry
+
+    return render_template('vulnerabilities/reflected-xss.html', msg=msg)
 
 
 # Execute Main

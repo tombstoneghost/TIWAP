@@ -1,0 +1,26 @@
+{% extends "dashboard_layout.html" %}
+{% block content %}
+<div class="sql-injection">
+    <div class="text-center" style="margin-bottom: 2%">
+        <h1>No SQL Injection</h1>
+    </div>
+    <div class="mt-3 container text-center">
+        <div>
+            <form method="post" action="/no-sql-injection-low">
+                <div>
+                    <label for="username" class="col-auto col-form-label">Car to Search</label>
+                    <div class="col-auto" style="margin-left: 32%">
+                        <input type="text" class="form-control" id="car" name="car" style="width: 50%">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success mt-3">Search</button>
+            </form>
+        </div>
+        <ul style="margin-top: 2%">
+            {% for d in data %}
+            <li>{{ d['name'] }} : {{ d['company'] }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

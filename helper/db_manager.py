@@ -49,3 +49,11 @@ class DBManager:
             return True
 
         return False
+
+    def get_user_data(self, userid):
+        result = self.cur.execute('SELECT * FROM users WHERE userid = (?)', (userid, ))
+
+        if type(result) != 'NoneType':
+            data = self.cur.fetchone()
+
+            return data

@@ -24,7 +24,7 @@ def index():
 
 
 # Login
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
     username = request.form.get('username')
     password = request.form.get('password')
@@ -80,7 +80,7 @@ def sql_injection_index():
 
 
 # Route for Low Vulnerability
-@app.route('/injection-low', methods=['GET', 'POST'])
+@app.route('/injection-low', methods=['POST'])
 @is_logged
 def sql_injection_low():
     if len(request.form) < 1:
@@ -105,7 +105,7 @@ def blind_sql_injection_index():
 
 
 # Route for Low Vulnerability
-@app.route('/blind-injection-low', methods=['GET', 'POST'])
+@app.route('/blind-injection-low', methods=['POST'])
 @is_logged
 def blind_sql_injection_low():
     if len(request.form) < 1:
@@ -132,7 +132,7 @@ def no_sql_injection():
 
 
 # Route for Low Vulnerability
-@app.route('/no-sql-injection-low', methods=['POST', 'GET'])
+@app.route('/no-sql-injection-low', methods=['POST'])
 @is_logged
 def no_sql_injection_low():
     if len(request.form) < 1:
@@ -147,6 +147,56 @@ def no_sql_injection_low():
     return render_template('vulnerabilities/no-sql-injection.html')
 
 
+# Sensitive Data Exposure
+# Index Page
+@app.route('/sensitive-data-exposure')
+@is_logged
+def sensitive_data_exposure():
+    return render_template('vulnerabilities/sensitive-data-exposure.html')
+
+
+# Route for Low Vulnerability - User
+@app.route('/sensitive-data-exposure/user')
+@is_logged
+def sensitive_data_exposure_low_user():
+    user_id = request.args.get('userid')
+
+    if int(user_id) == 1:
+        user_id = 2
+
+    data = dbm.get_user_data(userid=user_id)
+
+    return render_template('vulnerabilities/sensitive-data-exposure.html', data=data)
+
+
+# Route for Low Vulnerability - Admin
+@app.route('/sensitive-data-exposure/admin/')
+@is_logged
+def sensitive_data_exposure_low_admin():
+    user_id = request.args.get('userid')
+
+    if int(user_id) != 1:
+        return render_template('vulnerabilities/sensitive-data-exposure.html', msg="Invalid Admin ID")
+
+    data = dbm.get_user_data(userid=user_id)
+
+    return render_template('vulnerabilities/sensitive-data-exposure.html', data=data)
+
+
+# Route for Low Vulnerability - Admin
+@app.route('/sensitive-data-exposure/admin/config')
+@is_logged
+def sensitive_data_exposure_low_admin_config():
+    user_id = request.args.get('userid')
+
+    if int(user_id) != 1:
+        return render_template('vulnerabilities/sensitive-data-exposure.html', msg="Invalid Admin ID")
+
+    msg = "Here are the credentials for dev\n dev-user : BSYpUzIU0yDvvJ3"
+
+    return render_template('vulnerabilities/sensitive-data-exposure.html', msg=msg)
+
+
 # Reflected XSS
 # Index Page
 @app.route('/reflected-xss')
@@ -156,7 +206,7 @@ def reflected_xss():
 
 
 # Route for Low Vulnerability
-@app.route('/reflected-xss-low', methods=['POST', 'GET'])
+@app.route('/reflected-xss-low', methods=['POST'])
 @is_logged
 def reflected_xss_low():
     if len(request.form) < 1:
@@ -180,7 +230,7 @@ def stored_xss():
 
 
 # Route for Low Vulnerability
-@app.route('/stored-xss-low', methods=['POST', 'GET'])
+@app.route('/stored-xss-low', methods=['POST'])
 @is_logged
 def stored_xss_low():
     if len(request.form) < 1:
@@ -209,7 +259,7 @@ def dom_xss():
 
 
 # Route for Low Vulnerability
-@app.route('/dome-xss-low', methods=['POST', 'GET'])
+@app.route('/dome-xss-low', methods=['POST'])
 @is_logged
 def dom_xss_low():
     if len(request.form) < 1:

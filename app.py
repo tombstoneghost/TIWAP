@@ -169,6 +169,37 @@ def reflected_xss_low():
     return render_template('vulnerabilities/reflected-xss.html', msg=msg)
 
 
+# Stored XSS
+# Index Page
+@app.route('/stored-xss')
+@is_logged
+def stored_xss():
+    data = dbm.get_comments()
+
+    return render_template('vulnerabilities/stored-xss.html', data=data)
+
+
+# Route for Low Vulnerability
+@app.route('/stored-xss-low', methods=['POST', 'GET'])
+@is_logged
+def stored_xss_low():
+    if len(request.form) < 1:
+        return redirect(url_for('stored_xss'))
+
+    comment = request.form.get('input')
+
+    msg = ""
+
+    if dbm.save_comment(comment=comment):
+        msg = "Comment Saved"
+    else:
+        msg = "Unable to Save Comment"
+
+    data = dbm.get_comments()
+
+    return render_template('vulnerabilities/stored-xss.html', data=data, msg=msg)
+
+
 # Execute Main
 if __name__ == '__main__':
     app.run()

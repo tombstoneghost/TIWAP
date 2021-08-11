@@ -1,0 +1,28 @@
+{% extends "dashboard_layout.html" %}
+{% block content %}
+<div class="sql-injection">
+    <div class="text-center" style="margin-top: 5%; margin-bottom: 5%">
+        <h1>Stored XSS</h1>
+    </div>
+    <div class="mt-3 container text-center">
+            <form method="post" action="/stored-xss-low">
+                <div style="margin-left: 35%">
+                    <div class="mb-3 row">
+                        <label for="username" class="col-auto col-form-label">Enter Comment</label>
+                        <div class="col-auto">
+                            <input type="text" class="form-control" id="input" name="input">
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success">Submit</button>
+            </form>
+            <h6 class="text-center text-muted mt-3">{{ msg }}</h6>
+             <ul style="margin-top: 2%;">
+                {% for d in data %}
+                <li>{{ d[0] | safe}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

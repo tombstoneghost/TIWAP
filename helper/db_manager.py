@@ -33,3 +33,19 @@ class DBManager:
             # Check Passwords
             if password == password_db:
                 return True
+
+    def get_comments(self):
+        result = self.cur.execute("SELECT comment FROM comments")
+
+        if type(result) != 'NoneType':
+            data = self.cur.fetchall()
+
+            return data
+
+    def save_comment(self, comment):
+        result = self.cur.execute('INSERT INTO comments VALUES(?)', (comment, ))
+
+        if result:
+            return True
+
+        return False

@@ -5,6 +5,7 @@ from helper.jwt import JWT
 from helper.db_manager import DBManager
 from helper.mongodb_manager import MongoDBManager
 from vulnerabilities import SQLi
+import os
 
 # Initialize Flask
 app = Flask(__name__)
@@ -273,7 +274,7 @@ def dom_xss_low():
 
 
 # Hardcoded Credentials
-@app.route('/hardcoded-creds', methods=['POST'])
+@app.route('/hardcoded-creds', methods=['POST', 'GET'])
 @is_logged
 def hardcoded_creds():
     username = request.form.get('username')
@@ -286,6 +287,21 @@ def hardcoded_creds():
 
     return render_template('vulnerabilities/hardcoded-creds.html', msg=msg)
 
+# Command Injection
+@app.route('/cmd-injection')
+@is_logged
+def cmd_injection():
+    return render_template('vulnerabilities/command_injection.html')
+
+@app.route('/command-injection-low', methods=['POST'])
+@is_logged
+def cmd_injection_low():
+    query = request.form.get('input')
+    query = 'ping -c 4 ' + query
+    stream = os.popen(query)
+    output = stream.read()
+
+    return render_template('vulnerabilities/command_injection.html', msg=output)
 
 # Execute Main
 if __name__ == '__main__':

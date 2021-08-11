@@ -164,7 +164,7 @@ def reflected_xss_low():
 
     entry = request.form.get('input')
 
-    msg = "Hi!" + entry
+    msg = "Hi, " + entry
 
     return render_template('vulnerabilities/reflected-xss.html', msg=msg)
 
@@ -198,6 +198,28 @@ def stored_xss_low():
     data = dbm.get_comments()
 
     return render_template('vulnerabilities/stored-xss.html', data=data, msg=msg)
+
+
+# DOM Based XSS
+# Index Page
+@app.route('/dom-xss')
+@is_logged
+def dom_xss():
+    return render_template('vulnerabilities/dom-xss.html')
+
+
+# Route for Low Vulnerability
+@app.route('/dome-xss-low', methods=['POST', 'GET'])
+@is_logged
+def dom_xss_low():
+    if len(request.form) < 1:
+        return redirect(url_for('dom_xss'))
+
+    entry = request.form.get('input')
+
+    msg = "Hi, " + entry
+
+    return render_template('vulnerabilities/dom-xss.html', msg=msg)
 
 
 # Execute Main

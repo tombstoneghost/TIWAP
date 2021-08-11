@@ -272,6 +272,21 @@ def dom_xss_low():
     return render_template('vulnerabilities/dom-xss.html', msg=msg)
 
 
+# Hardcoded Credentials
+@app.route('/hardcoded-creds', methods=['POST'])
+@is_logged
+def hardcoded_creds():
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    msg = ""
+
+    if username == 'dev-user' and password == 'BSYpUzIU0yDvvJ3':
+        msg = "You are logged in!"
+
+    return render_template('vulnerabilities/hardcoded-creds.html', msg=msg)
+
+
 # Execute Main
 if __name__ == '__main__':
     app.run()

@@ -302,7 +302,30 @@ def cmd_injection_low():
     output = stream.read()
 
     return render_template('vulnerabilities/command_injection.html', msg=output)
+    
+
+# Business Logic Flaw
+@app.route('/business-logic')
+@is_logged
+def business_logic():
+    return render_template('vulnerabilities/business-logic.html')
+
+
+# Route for Low Vulnerability
+@app.route('/business-logic-low', methods=['POST'])
+@is_logged
+def business_logic_low():
+    
+    username = request.form.get('username')
+    password = request.form.get('password')
+    result = "Incorrect Username or Password"
+    if username=="adM1n1sTrat0R" and password=="123P4ssW0rd@@":
+        result = "Logged in successfully as an ADMIN!!!"
+
+    return render_template('vulnerabilities/business-logic.html', msg=result)
+
 
 # Execute Main
 if __name__ == '__main__':
     app.run()
+

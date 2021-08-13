@@ -153,10 +153,23 @@ def no_sql_injection_low():
 @app.route('/sensitive-data-exposure')
 @is_logged
 def sensitive_data_exposure():
-    return render_template('vulnerabilities/sensitive-data-exposure.html')
+    return render_template('vulnerabilities/sensitive-data-exposure-low.html')
+ #   return render_template('vulnerabilities/sensitive-data-exposure.html')
 
+# Route for low Vulnerability
+@app.route('/sensitive-data-exposure-low', methods=['POST'])
+@is_logged
+def sensitive_data_exposure_low():
+    
+    username = request.form.get('username')
+    password = request.form.get('password')
+    result = "Incorrect Username or Password"
+    if username=="adM1n1sTrat0R" and password=="123P4ssW0rd@@":
+        result = "Logged in successfully as an ADMIN!!!"
 
-# Route for Low Vulnerability - User
+    return render_template('vulnerabilities/sensitive-data-exposure-low.html', msg=result)
+
+# Route for medium Vulnerability - User
 @app.route('/sensitive-data-exposure/user')
 @is_logged
 def sensitive_data_exposure_low_user():
@@ -170,7 +183,7 @@ def sensitive_data_exposure_low_user():
     return render_template('vulnerabilities/sensitive-data-exposure.html', data=data)
 
 
-# Route for Low Vulnerability - Admin
+# Route for medium Vulnerability - Admin
 @app.route('/sensitive-data-exposure/admin/')
 @is_logged
 def sensitive_data_exposure_low_admin():
@@ -184,7 +197,7 @@ def sensitive_data_exposure_low_admin():
     return render_template('vulnerabilities/sensitive-data-exposure.html', data=data)
 
 
-# Route for Low Vulnerability - Admin
+# Route for medium Vulnerability - Admin
 @app.route('/sensitive-data-exposure/admin/config')
 @is_logged
 def sensitive_data_exposure_low_admin_config():
@@ -318,11 +331,38 @@ def business_logic_low():
     
     username = request.form.get('username')
     password = request.form.get('password')
-    result = "Incorrect Username or Password"
-    if username=="adM1n1sTrat0R" and password=="123P4ssW0rd@@":
-        result = "Logged in successfully as an ADMIN!!!"
-
+    if username=="catherine" and password!="starwars":
+        result = "Password is incorrect... Try again!!!"
+    elif username!="catherine" and password=="starwars":
+        result = "Username is incorrect... Try again!!!"
+    elif username=="catherine" and password=="starwars":
+        result = "Logged in Successful :-)"
+    else:
+        result = "Invalid Credentials :-("
     return render_template('vulnerabilities/business-logic.html', msg=result)
+
+
+# Brute Force Attack
+@app.route('/brute-force')
+@is_logged
+def brute_force():
+    return render_template('vulnerabilities/brute-force.html')
+
+
+# Route for Low Vulnerability
+@app.route('/brute-force-low', methods=['POST'])
+@is_logged
+def brute_force_low():
+    
+    username = request.form.get('username')
+    password = request.form.get('password')
+    if username=="administrator" and password!="whitetiger93@jen":
+        result = "Try again!!!"
+    elif username=="administrator" and password=="whitetiger93@jen":
+        result = "Logged in Successful :-)"
+    else:
+        result = "Invalid Credentials :-("
+    return render_template('vulnerabilities/brute-force.html', msg=result)
 
 
 # Execute Main

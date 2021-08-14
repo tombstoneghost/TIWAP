@@ -7,9 +7,13 @@ from helper.mongodb_manager import MongoDBManager
 from vulnerabilities import SQLi
 import os
 
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_FOLDER = os.path.join(APP_ROOT, 'uploads')
+
 # Initialize Flask
 app = Flask(__name__)
 app.secret_key = 'l0G1n_53cR37_k3y'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # JWT
 jwt = JWT()
@@ -364,8 +368,48 @@ def brute_force_low():
         result = "Invalid Credentials :-("
     return render_template('vulnerabilities/brute-force.html', msg=result)
 
+@app.route('/insecure-file-up')
+@is_logged
+def insecure_file_upload():
+    return render_template('vulnerabilities/insecure-file-upload.html')
+
+@app.route('/file-upload-low', methods=['POST', 'GET'])
+@is_logged
+def file_upload_low():
+
+    print(request)
+    print(request.files)
+    uploaded_file = request.files['file']
+    if uploaded_file == '':
+        result = "No file selected!"
+        return redirect(url_for('insecure_file_upload'))
+    else:
+        full_filename = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+        uploaded_file.save(full_filename)
+        result = "File uploaded successfully!"
+
+    return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
+
+#@app.route('/file-upload-medium', methods=['POST', 'GET'])
+#@is_logged
+#def file_upload_medium():
+#    print(request)
+#    print(request.files)
+#    uploaded_file = request.files['file']
+#    ext = uploaded_file.filename.split('.')[1]
+#    if uploaded_file.filename == '':
+#        result = "No file selected!"
+#       return redirect(url_for('insecure_file_upload'))
+#    elif ext != 'img' and ext != 'jpg' and ext != 'jpeg':
+#       result = "File format not supported!"
+#    else:
+#        full_filename = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+#        uploaded_file.save(full_filename)
+#       result = "File uploaded successfully!"
+
+#    return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
 
 # Execute Main
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
 

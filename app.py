@@ -1,10 +1,13 @@
 # Imports
-from flask import Flask, render_template, request, session, redirect, url_for, flash
+from flask import Flask, render_template, request, session, redirect, url_for
+from flask_cors import CORS, cross_origin
 from functools import wraps
 from helper.jwt import JWT
 from helper.db_manager import DBManager
 from helper.mongodb_manager import MongoDBManager
 from vulnerabilities import SQLi
+from lxml import etree
+
 import os
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -305,16 +308,23 @@ def hardcoded_creds():
     return render_template('vulnerabilities/hardcoded-creds.html', msg=msg)
 
 # Command Injection
+
+
+# Index Page
 @app.route('/cmd-injection')
 @is_logged
 def cmd_injection():
     return render_template('vulnerabilities/command_injection.html')
 
+
+# Route for Low Vulnerability
 @app.route('/command-injection-low', methods=['POST'])
 @is_logged
 def cmd_injection_low():
     query = request.form.get('input')
+
     query = 'ping -c 4 ' + query
+
     stream = os.popen(query)
     output = stream.read()
 
@@ -368,15 +378,18 @@ def brute_force_low():
         result = "Invalid Credentials :-("
     return render_template('vulnerabilities/brute-force.html', msg=result)
 
+
+# Insecure File Upload
 @app.route('/insecure-file-up')
 @is_logged
 def insecure_file_upload():
     return render_template('vulnerabilities/insecure-file-upload.html')
 
+
+# Route for Low Vulnerability
 @app.route('/file-upload-low', methods=['POST', 'GET'])
 @is_logged
 def file_upload_low():
-
     print(request)
     print(request.files)
     uploaded_file = request.files['file']
@@ -390,24 +403,49 @@ def file_upload_low():
 
     return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
 
-#@app.route('/file-upload-medium', methods=['POST', 'GET'])
-#@is_logged
-#def file_upload_medium():
-#    print(request)
-#    print(request.files)
-#    uploaded_file = request.files['file']
-#    ext = uploaded_file.filename.split('.')[1]
-#    if uploaded_file.filename == '':
-#        result = "No file selected!"
-#       return redirect(url_for('insecure_file_upload'))
-#    elif ext != 'img' and ext != 'jpg' and ext != 'jpeg':
-#       result = "File format not supported!"
-#    else:
-#        full_filename = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
-#        uploaded_file.save(full_filename)
-#       result = "File uploaded successfully!"
 
-#    return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
+# Route for Low Vulnerability
+@app.route('/file-upload-medium', methods=['POST', 'GET'])
+@is_logged
+def file_upload_medium():
+    uploaded_file = request.files['file']
+    ext = uploaded_file.filename.split('.')[1]
+    result = None
+    if uploaded_file.filename == '':
+        result = "No file selected!"
+        return redirect(url_for('insecure_file_upload'))
+    elif ext != 'img' and ext != 'jpg' and ext != 'jpeg':
+        result = "File format not supported!"
+    else:
+        full_filename = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+        uploaded_file.save(full_filename)
+        result = "File uploaded successfully!"
+
+    return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
+
+
+# XML External Entities
+@app.route('/xxe')
+@is_logged
+def xxe_index():
+    return render_template('vulnerabilities/xml-external-entities.html')
+
+
+# Route for Low Vulnerability
+@app.route('/xxe-low', methods=['POST', 'GET'])
+@is_logged
+def xxe_low():
+    name = "Invalid"
+    tree = etree.fromstring(request.data)
+
+    for child in tree:
+        if child.tag == "name":
+            name = "Hey! " + child.text
+
+    result = "<result><msg>%s</msg><result>" % name
+
+    return result, {'Content-Type': 'application/xml; charset=UTF-8'}
+
 
 # Execute Main
 if __name__ == '__main__':

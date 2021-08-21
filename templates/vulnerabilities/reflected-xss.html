@@ -5,19 +5,18 @@
         <h1>Reflected XSS</h1>
     </div>
     <div class="mt-3 container text-center">
-            <form method="post" action="/reflected-xss-low">
-                <div style="margin-left: 35%">
-                    <div class="mb-3 row">
-                        <label for="username" class="col-auto col-form-label">Enter your name</label>
-                        <div class="col-auto">
-                            <input type="text" class="form-control" id="input" name="input">
-                        </div>
+        <form method="post" action="/reflected-xss-low">
+            <div style="margin-left: 35%">
+                <div class="mb-3 row">
+                    <label for="username" class="col-auto col-form-label">Enter your name</label>
+                    <div class="col-auto">
+                        <input type="text" class="form-control" id="input" name="input">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-success">Submit</button>
-            </form>
-            <h6 class="text-center text-muted mt-3">{{ msg | safe}}</h6>
-        </div>
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+        <h6 class="text-center text-muted mt-3">{{ msg | safe}}</h6>
     </div>
 </div>
 {% endblock %}

@@ -16,11 +16,15 @@ class MongoDBManager:
         return data
 
     def get_data_filtered(self, filtered):
-        res = self.connection.find(filtered)
+        try:
+            res = self.connection.find({"name": filtered})
+            data = []
 
-        data = []
+            for r in res:
+                del r['_id']
+                data.append(r)
 
-        for r in res:
-            data.append(r)
+            return data
 
-        return data
+        except Exception as e:
+            return e

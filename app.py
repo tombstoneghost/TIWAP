@@ -4,7 +4,7 @@ from functools import wraps
 from helper.jwt import JWT
 from helper.db_manager import DBManager
 from helper.mongodb_manager import MongoDBManager
-from vulnerabilities import SQLi, CommandInjection, BusinessLogic, XXE, XSS, BruteForce
+from vulnerabilities import SQLi, CommandInjection, BusinessLogic, XXE, XSS, BruteForce, NoSQL
 
 import os
 
@@ -128,29 +128,21 @@ def blind_sql_injection_index():
 
 
 # NoSQL Injection
-# Index Page
-@app.route('/no-sql-injection')
+@app.route('/no-sql-injection', methods=['POST', 'GET'])
 @is_logged
 def no_sql_injection():
-    data = mongo_dbm.get_data_all()
-
-    return render_template('vulnerabilities/no-sql-injection.html', data=data)
-
-
-# Route for Low Vulnerability
-@app.route('/no-sql-injection-low', methods=['POST'])
-@is_logged
-def no_sql_injection_low():
+    data = None
     if len(request.form) < 1:
-        return redirect(url_for('no_sql_injection'))
+        data = mongo_dbm.get_data_all()
+        return render_template('vulnerabilities/no-sql-injection.html', data=data)
+    else:
+        query = request.form.get('car')
+        nosqli = NoSQL
 
-    query = request.form.get('car')
+        if session['level'] == 0:
+            data = nosqli.no_sql_injection_low(query)
 
-    data = mongo_dbm.get_data_filtered(query)
-
-    print(data)
-
-    return render_template('vulnerabilities/no-sql-injection.html')
+        return render_template('vulnerabilities/no-sql-injection.html', data=data)
 
 
 # Command Injection
@@ -279,7 +271,6 @@ def xxe_index():
 
 
 # Reflected XSS
-# Index Page
 @app.route('/reflected-xss', methods=['POST', 'GET'])
 @is_logged
 def reflected_xss():

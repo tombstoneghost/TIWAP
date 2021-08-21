@@ -86,6 +86,14 @@ def dashboard():
     return render_template('dashboard.html')
 
 
+# Settings
+@app.route('/settings')
+@is_logged
+def settings():
+    return render_template('settings.html')
+
+
+
 # SQL Injection
 @app.route('/sql-injection', methods=['POST', 'GET'])
 @is_logged

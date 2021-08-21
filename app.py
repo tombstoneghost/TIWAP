@@ -390,6 +390,28 @@ def brute_force():
         return render_template('vulnerabilities/brute-force.html', msg=result)
 
 
+# Directort traversal
+
+@app.route('/directory-traversal', methods=['POST', 'GET'])
+@is_logged
+def directory_traversal():
+    if not request.args:
+        return render_template('vulnerabilities/directory_traversal.html')
+    else:
+        image_name = request.args.get('image')
+        if image_name=="NoneType":
+            return render_template("vulnerabilities/directory_traversal.html")
+        if image_name in ["cat","dog","monkey"]:
+            image_name= image_name + ".jpg"
+        path=os.path.join("/static/images", image_name)
+        if ".jpg" or ".png" in path:
+            return render_template("vulnerabilities/directory_traversal.html", user_image = path)
+        else:
+            f = open(image_name , "r")
+            result=f.read()
+            print(result)
+            return render_template("vulnerabilities/directory_traversal.html", msg = result)
+
 # Execute Main
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,6 +1,7 @@
 # Imports
 from flask import Flask, render_template, request, session, redirect, url_for
 from functools import wraps
+from helper import functioning
 from helper.jwt import JWT
 from helper.db_manager import DBManager
 from helper.mongodb_manager import MongoDBManager
@@ -17,10 +18,11 @@ app = Flask(__name__)
 app.secret_key = 'l0G1n_53cR37_k3y'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# JWT
+# Global Classes/Functions
 jwt = JWT()
 dbm = DBManager()
 mongo_dbm = MongoDBManager()
+funcs = functioning
 
 
 '''
@@ -87,11 +89,20 @@ def dashboard():
 
 
 # Settings
-@app.route('/settings')
+@app.route('/settings', methods=['POST', 'GET'])
 @is_logged
 def settings():
-    return render_template('settings.html')
+    if len(request.args) < 1:
+        level = funcs.get_level_by_code(session['level'])
+        return render_template('settings.html', level=level)
+    else:
+        level = request.args.get('level')
+        level_code = funcs.get_level_by_name(level)
+        session['level'] = level_code
 
+        level = str(level).capitalize()
+
+        return render_template('settings.html', level=level, msg="Difficult Set to " + level)
 
 
 # SQL Injection
@@ -408,7 +419,7 @@ def directory_traversal():
                 f = open(image_name, "r")
                 result = f.read()
                 return render_template("vulnerabilities/directory-traversal.html", msg=result)
-            except FileNotFoundError as e:
+            except FileNotFoundError:
                 return render_template("vulnerabilities/directory-traversal.html", msg="File not Found")
 
 

@@ -1,0 +1,30 @@
+{% extends "dashboard_layout.html" %}
+{% block content %}
+<div class="sql-injection">
+    <div class="text-center" style="margin-top: 5%; margin-bottom: 5%">
+        <h1>Cross-Site-Request-Forgery</h1>
+    </div>
+    <div class="mt-3 container text-center">
+        <form method="post" action="/csrf">
+            <div style="margin-left: 35%">
+                <div class="mb-3 row">
+                    <label for="account" class="col-auto col-form-label">Account Number</label>
+                    <div class="col-auto">
+                        <input type="text" class="form-control" name="account" value="110025645" id="account" disabled>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="amount" class="col-auto col-form-label" style="margin-right: 5px">Transfer Amount</label>
+                    <div class="col-auto">
+                        <input type="text" class="form-control" name="amount" id="amount">
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Transfer</button>
+        </form>
+    </div>
+    <h6 class="text-center text-muted mt-3">The Amount will always be transferred to 110025645.<br/>
+        Try to transfer it into your account which is 110026325.</h6>
+    <h6 class="text-center text-muted mt-3">{{ msg }}</h6>
+</div>
+{% endblock %}

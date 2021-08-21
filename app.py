@@ -439,6 +439,22 @@ def directory_traversal():
                 return render_template("vulnerabilities/directory-traversal.html", msg="File not Found")
 
 
+# CSRF
+@app.route('/csrf', methods=['POST', 'GET'])
+@is_logged
+def csrf():
+    if len(request.form) < 1:
+        return render_template('vulnerabilities/csrf.html')
+    else:
+        account = request.form.get('account')
+        amount = request.form.get('amount')
+
+        if int(account) == 110026325:
+            return render_template('vulnerabilities/csrf.html', msg="You got the money!")
+        else:
+            return render_template('vulnerabilities/csrf.html', msg="Try to get the Money")
+
+
 # Execute Main
 if __name__ == '__main__':
     app.run(debug=True)

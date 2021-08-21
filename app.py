@@ -423,6 +423,23 @@ def directory_traversal():
                 return render_template("vulnerabilities/directory-traversal.html", msg="File not Found")
 
 
+# HTML Injection
+@app.route('/html-injection', methods=['POST', 'GET'])
+@is_logged
+def html_injection():
+    msg = None
+    if len(request.form) < 1:
+        return render_template('vulnerabilities/html_injection.html')
+    else:
+        entry = request.form.get('input')
+
+        if session['level'] == 0:
+            msg = "Hi, " + entry + ". How are you???"
+
+        return render_template('vulnerabilities/html_injection.html', msg=msg)
+
+
+
 # Execute Main
 if __name__ == '__main__':
     app.run(debug=True)

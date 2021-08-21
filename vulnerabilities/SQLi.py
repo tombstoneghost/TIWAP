@@ -7,7 +7,7 @@ from helper.db_manager import DBManager
 dbmanager = DBManager()
 
 
-# SQL Injection - Low Function
+# SQL Injection - Low
 def sqli_low(username, password):
     global dbmanager
 
@@ -27,7 +27,7 @@ def sqli_low(username, password):
     return result.fetchall()
 
 
-# Blind SQL Injection - Low Function
+# Blind SQL Injection - Low
 def blind_sqli_low(username, password):
     global dbmanager
 

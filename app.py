@@ -1,15 +1,14 @@
 # Imports
 from flask import Flask, render_template, request, session, redirect, url_for
-from flask_cors import CORS, cross_origin
 from functools import wraps
 from helper.jwt import JWT
 from helper.db_manager import DBManager
 from helper.mongodb_manager import MongoDBManager
-from vulnerabilities import SQLi
-from lxml import etree
+from vulnerabilities import SQLi, CommandInjection, BusinessLogic, XXE, XSS, BruteForce
 
 import os
 
+# Upload Folder Configuration
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'uploads')
 
@@ -24,6 +23,15 @@ dbm = DBManager()
 mongo_dbm = MongoDBManager()
 
 
+'''
+Difficulty      Levels
+Low               0
+Medium            1
+Hard              2
+'''
+
+
+# Index
 @app.route('/')
 def index():
     if session and session['logged_in']:
@@ -43,15 +51,14 @@ def login():
     if dbm.check_login(username=username, password=password):
         session['logged_in'] = True
         session['auth'] = jwt.encode_auth_token(username)
+        session['level'] = 0
 
         return redirect(url_for('dashboard'))
     else:
         return render_template('index.html', msg='Invalid Credentials')
 
-    return render_template('index.html')
 
-
-# Check if user is logged in
+# Decorator to Check if user is logged in
 def is_logged(f):
     @wraps(f)
     def wrap(*args, **kwargs):
@@ -80,53 +87,36 @@ def dashboard():
 
 
 # SQL Injection
-# Index Page
-@app.route('/sql-injection')
+@app.route('/sql-injection', methods=['POST', 'GET'])
 @is_logged
 def sql_injection_index():
-    return render_template('vulnerabilities/sql-injection.html')
-
-
-# Route for Low Vulnerability
-@app.route('/injection-low', methods=['POST'])
-@is_logged
-def sql_injection_low():
     if len(request.form) < 1:
-        return redirect(url_for('sql_injection_index'))
+        return render_template('vulnerabilities/sql-injection.html')
+    else:
+        username = request.form.get('username')
+        password = request.form.get('password')
+        sqli = SQLi
 
-    username = request.form.get('username')
-    password = request.form.get('password')
+        if session['level'] == 0:
+            result = sqli.sqli_low(username=username, password=password)
 
-    sqli = SQLi
-
-    result = sqli.sqli_low(username=username, password=password)
-
-    return render_template('vulnerabilities/sql-injection.html', msg=result)
+            return render_template('vulnerabilities/sql-injection.html', msg=result)
 
 
 # Blind SQL Injection
-# Index Page
-@app.route('/blind-sql-injection')
+@app.route('/blind-sql-injection', methods=['POST', 'GET'])
 @is_logged
 def blind_sql_injection_index():
-    return render_template('vulnerabilities/blind-sql-injection.html')
-
-
-# Route for Low Vulnerability
-@app.route('/blind-injection-low', methods=['POST'])
-@is_logged
-def blind_sql_injection_low():
     if len(request.form) < 1:
-        return redirect(url_for('blind_sql_injection_index'))
+        return render_template('vulnerabilities/blind-sql-injection.html')
+    else:
+        username = request.form.get('username')
+        password = request.form.get('password')
+        sqli = SQLi
 
-    username = request.form.get('username')
-    password = request.form.get('password')
-
-    sqli = SQLi
-
-    result = sqli.blind_sqli_low(username=username, password=password)
-
-    return render_template('vulnerabilities/blind-sql-injection.html', msg=result)
+        if session['level'] == 0:
+            result = sqli.blind_sqli_low(username=username, password=password)
+            return render_template('vulnerabilities/blind-sql-injection.html', msg=result)
 
 
 # NoSQL Injection
@@ -155,31 +145,70 @@ def no_sql_injection_low():
     return render_template('vulnerabilities/no-sql-injection.html')
 
 
+# Command Injection
+@app.route('/cmd-injection', methods=['POST', 'GET'])
+@is_logged
+def cmd_injection():
+    output = None
+    if len(request.form) < 1:
+        return render_template('vulnerabilities/command_injection.html')
+    else:
+        query = request.form.get('input')
+        ci = CommandInjection
+        if session['level'] == 0:
+            output = ci.cmd_injection_low(query=query)
+
+        return render_template('vulnerabilities/command_injection.html', msg=output)
+
+
+# Business Logic Flaw
+@app.route('/business-logic')
+@is_logged
+def business_logic():
+    result = None
+    if len(request.form) < 1:
+        return render_template('vulnerabilities/business-logic.html')
+    else:
+        username = request.form.get('username')
+        password = request.form.get('password')
+        bl = BusinessLogic
+
+        if session['level'] == 0:
+            result = bl.business_logic_low(username=username, password=password)
+
+        return render_template('vulnerabilities/business-logic.html', msg=result)
+
+
 # Sensitive Data Exposure
 # Index Page
 @app.route('/sensitive-data-exposure')
 @is_logged
 def sensitive_data_exposure():
-    return render_template('vulnerabilities/sensitive-data-exposure-low.html')
- #   return render_template('vulnerabilities/sensitive-data-exposure.html')
+    if len(request.form) or len(request.args) < 1:
+        if session['level'] == 0:
+            return render_template('vulnerabilities/sensitive-data-exposure-low.html')
+        if session['level'] == 1:
+            return render_template('vulnerabilities/sensitive-data-exposure-medium.html')
+    else:
+        if session['level'] == 0:
+            username = request.form.get('username')
+            password = request.form.get('password')
+            result = "Incorrect Username or Password"
+            if username == "adM1n1sTrat0R" and password == "123P4ssW0rd@@":
+                result = "Logged in successfully as an Admin"
 
-# Route for low Vulnerability
-@app.route('/sensitive-data-exposure-low', methods=['POST'])
-@is_logged
-def sensitive_data_exposure_low():
-    
-    username = request.form.get('username')
-    password = request.form.get('password')
-    result = "Incorrect Username or Password"
-    if username=="adM1n1sTrat0R" and password=="123P4ssW0rd@@":
-        result = "Logged in successfully as an ADMIN!!!"
+            return render_template('vulnerabilities/sensitive-data-exposure-low.html', msg=result)
+        elif session['level'] == 1:
+            return redirect(url_for('sensitive_data_exposure_low_user'))
 
-    return render_template('vulnerabilities/sensitive-data-exposure-low.html', msg=result)
 
 # Route for medium Vulnerability - User
 @app.route('/sensitive-data-exposure/user')
 @is_logged
 def sensitive_data_exposure_low_user():
+    if len(request.args) < 1:
+        return render_template('vulnerabilities/sensitive-data-exposure-medium.html', msg="Invalid ID")
+
     user_id = request.args.get('userid')
 
     if int(user_id) == 1:
@@ -187,110 +216,111 @@ def sensitive_data_exposure_low_user():
 
     data = dbm.get_user_data(userid=user_id)
 
-    return render_template('vulnerabilities/sensitive-data-exposure.html', data=data)
+    return render_template('vulnerabilities/sensitive-data-exposure-medium.html', data=data)
 
 
 # Route for medium Vulnerability - Admin
 @app.route('/sensitive-data-exposure/admin/')
 @is_logged
 def sensitive_data_exposure_low_admin():
+    if len(request.args) < 1:
+        return render_template('vulnerabilities/sensitive-data-exposure-medium.html', msg="Invalid ID")
+
     user_id = request.args.get('userid')
 
     if int(user_id) != 1:
-        return render_template('vulnerabilities/sensitive-data-exposure.html', msg="Invalid Admin ID")
+        return render_template('vulnerabilities/sensitive-data-exposure-medium.html', msg="Invalid Admin ID")
 
     data = dbm.get_user_data(userid=user_id)
 
-    return render_template('vulnerabilities/sensitive-data-exposure.html', data=data)
+    return render_template('vulnerabilities/sensitive-data-exposure-medium.html', data=data)
 
 
 # Route for medium Vulnerability - Admin
 @app.route('/sensitive-data-exposure/admin/config')
 @is_logged
 def sensitive_data_exposure_low_admin_config():
+    if len(request.args) < 1:
+        return render_template('vulnerabilities/sensitive-data-exposure-medium.html', msg="Invalid ID")
+
     user_id = request.args.get('userid')
 
     if int(user_id) != 1:
-        return render_template('vulnerabilities/sensitive-data-exposure.html', msg="Invalid Admin ID")
+        return render_template('vulnerabilities/sensitive-data-exposure-medium.html', msg="Invalid Admin ID")
 
     msg = "Here are the credentials for dev\n dev-user : BSYpUzIU0yDvvJ3"
 
-    return render_template('vulnerabilities/sensitive-data-exposure.html', msg=msg)
+    return render_template('vulnerabilities/sensitive-data-exposure-medium.html', msg=msg)
+
+
+# XML External Entities
+@app.route('/xxe', methods=['POST', 'GET'])
+@is_logged
+def xxe_index():
+    result = None
+    if len(request.data) < 1:
+        return render_template('vulnerabilities/xml-external-entities.html')
+    else:
+        data = request.data
+        xxe = XXE
+
+        if session['level'] == 0:
+            result = xxe.xxe_low(data=data)
+
+        return result, {'Content-Type': 'application/xml; charset=UTF-8'}
 
 
 # Reflected XSS
 # Index Page
-@app.route('/reflected-xss')
+@app.route('/reflected-xss', methods=['POST', 'GET'])
 @is_logged
 def reflected_xss():
-    return render_template('vulnerabilities/reflected-xss.html')
-
-
-# Route for Low Vulnerability
-@app.route('/reflected-xss-low', methods=['POST'])
-@is_logged
-def reflected_xss_low():
+    msg = None
     if len(request.form) < 1:
-        return redirect(url_for('reflected_xss'))
+        return render_template('vulnerabilities/reflected-xss.html')
+    else:
+        entry = request.form.get('input')
 
-    entry = request.form.get('input')
+        if session['level'] == 0:
+            msg = "Hi, " + entry
 
-    msg = "Hi, " + entry
-
-    return render_template('vulnerabilities/reflected-xss.html', msg=msg)
+        return render_template('vulnerabilities/reflected-xss.html', msg=msg)
 
 
 # Stored XSS
-# Index Page
-@app.route('/stored-xss')
+@app.route('/stored-xss', methods=['POST', 'GET'])
 @is_logged
 def stored_xss():
-    data = dbm.get_comments()
-
-    return render_template('vulnerabilities/stored-xss.html', data=data)
-
-
-# Route for Low Vulnerability
-@app.route('/stored-xss-low', methods=['POST'])
-@is_logged
-def stored_xss_low():
+    msg = None
+    data = None
     if len(request.form) < 1:
-        return redirect(url_for('stored_xss'))
+        data = dbm.get_comments()
 
-    comment = request.form.get('input')
-
-    msg = ""
-
-    if dbm.save_comment(comment=comment):
-        msg = "Comment Saved"
+        return render_template('vulnerabilities/stored-xss.html', data=data)
     else:
-        msg = "Unable to Save Comment"
+        comment = request.form.get('input')
+        xss = XSS
 
-    data = dbm.get_comments()
+        if session['level'] == 0:
+            msg, data = xss.stored_xss_low(comment=comment)
 
-    return render_template('vulnerabilities/stored-xss.html', data=data, msg=msg)
+        return render_template('vulnerabilities/stored-xss.html', data=data, msg=msg)
 
 
 # DOM Based XSS
-# Index Page
-@app.route('/dom-xss')
+@app.route('/dom-xss', methods=['POST', 'GET'])
 @is_logged
 def dom_xss():
-    return render_template('vulnerabilities/dom-xss.html')
-
-
-# Route for Low Vulnerability
-@app.route('/dome-xss-low', methods=['POST'])
-@is_logged
-def dom_xss_low():
+    msg = None
     if len(request.form) < 1:
-        return redirect(url_for('dom_xss'))
+        return render_template('vulnerabilities/dom-xss.html')
+    else:
+        entry = request.form.get('input')
 
-    entry = request.form.get('input')
+        if session['level'] == 0:
+            msg = "Hi, " + entry
 
-    msg = "Hi, " + entry
-
-    return render_template('vulnerabilities/dom-xss.html', msg=msg)
+        return render_template('vulnerabilities/dom-xss.html', msg=msg)
 
 
 # Hardcoded Credentials
@@ -307,147 +337,59 @@ def hardcoded_creds():
 
     return render_template('vulnerabilities/hardcoded-creds.html', msg=msg)
 
-# Command Injection
-
-
-# Index Page
-@app.route('/cmd-injection')
-@is_logged
-def cmd_injection():
-    return render_template('vulnerabilities/command_injection.html')
-
-
-# Route for Low Vulnerability
-@app.route('/command-injection-low', methods=['POST'])
-@is_logged
-def cmd_injection_low():
-    query = request.form.get('input')
-
-    query = 'ping -c 4 ' + query
-
-    stream = os.popen(query)
-    output = stream.read()
-
-    return render_template('vulnerabilities/command_injection.html', msg=output)
-    
-
-# Business Logic Flaw
-@app.route('/business-logic')
-@is_logged
-def business_logic():
-    return render_template('vulnerabilities/business-logic.html')
-
-
-# Route for Low Vulnerability
-@app.route('/business-logic-low', methods=['POST'])
-@is_logged
-def business_logic_low():
-    
-    username = request.form.get('username')
-    password = request.form.get('password')
-    if username=="catherine" and password!="starwars":
-        result = "Password is incorrect... Try again!!!"
-    elif username!="catherine" and password=="starwars":
-        result = "Username is incorrect... Try again!!!"
-    elif username=="catherine" and password=="starwars":
-        result = "Logged in Successful :-)"
-    else:
-        result = "Invalid Credentials :-("
-    return render_template('vulnerabilities/business-logic.html', msg=result)
-
-
-# Brute Force Attack
-@app.route('/brute-force')
-@is_logged
-def brute_force():
-    return render_template('vulnerabilities/brute-force.html')
-
-
-# Route for Low Vulnerability
-@app.route('/brute-force-low', methods=['POST'])
-@is_logged
-def brute_force_low():
-    
-    username = request.form.get('username')
-    password = request.form.get('password')
-    if username=="administrator" and password!="whitetiger93@jen":
-        result = "Try again!!!"
-    elif username=="administrator" and password=="whitetiger93@jen":
-        result = "Logged in Successful :-)"
-    else:
-        result = "Invalid Credentials :-("
-    return render_template('vulnerabilities/brute-force.html', msg=result)
-
 
 # Insecure File Upload
-@app.route('/insecure-file-up')
+@app.route('/insecure-file-upload', methods=['POST', 'GET'])
 @is_logged
 def insecure_file_upload():
-    return render_template('vulnerabilities/insecure-file-upload.html')
-
-
-# Route for Low Vulnerability
-@app.route('/file-upload-low', methods=['POST', 'GET'])
-@is_logged
-def file_upload_low():
-    print(request)
-    print(request.files)
-    uploaded_file = request.files['file']
-    if uploaded_file == '':
-        result = "No file selected!"
-        return redirect(url_for('insecure_file_upload'))
-    else:
-        full_filename = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
-        uploaded_file.save(full_filename)
-        result = "File uploaded successfully!"
-
-    return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
-
-
-# Route for Low Vulnerability
-@app.route('/file-upload-medium', methods=['POST', 'GET'])
-@is_logged
-def file_upload_medium():
-    uploaded_file = request.files['file']
-    ext = uploaded_file.filename.split('.')[1]
     result = None
-    if uploaded_file.filename == '':
-        result = "No file selected!"
-        return redirect(url_for('insecure_file_upload'))
-    elif ext != 'img' and ext != 'jpg' and ext != 'jpeg':
-        result = "File format not supported!"
+    if len(request.files) < 1:
+        return render_template('vulnerabilities/insecure-file-upload.html')
     else:
-        full_filename = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
-        uploaded_file.save(full_filename)
-        result = "File uploaded successfully!"
+        uploaded_file = request.files['file']
 
-    return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
+        if session['level'] == 0:
+            if uploaded_file == '':
+                result = "No file selected!"
+                return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
+
+            full_filename = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+            uploaded_file.save(full_filename)
+            result = "File uploaded successfully!"
+        elif session['level'] == 1:
+            ext = uploaded_file.filename.split('.')[1]
+
+            if uploaded_file.filename == '':
+                result = "No file selected!"
+                return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
+            elif ext != 'img' and ext != 'jpg' and ext != 'jpeg':
+                result = "File format not supported!"
+            else:
+                full_filename = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+                uploaded_file.save(full_filename)
+                result = "File uploaded successfully!"
+
+        return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
 
 
-# XML External Entities
-@app.route('/xxe')
+# Brute Force
+@app.route('/brute-force', methods=['POST', 'GET'])
 @is_logged
-def xxe_index():
-    return render_template('vulnerabilities/xml-external-entities.html')
+def brute_force():
+    result = None
+    if len(request.form) < 1:
+        return render_template('vulnerabilities/brute-force.html')
+    else:
+        username = request.form.get('username')
+        password = request.form.get('password')
+        bf = BruteForce
 
+        if session['level'] == 0:
+            result = bf.brute_force_low(username=username, password=password)
 
-# Route for Low Vulnerability
-@app.route('/xxe-low', methods=['POST', 'GET'])
-@is_logged
-def xxe_low():
-    name = "Invalid"
-    tree = etree.fromstring(request.data)
-
-    for child in tree:
-        if child.tag == "name":
-            name = "Hey! " + child.text
-
-    result = "<result><msg>%s</msg><result>" % name
-
-    return result, {'Content-Type': 'application/xml; charset=UTF-8'}
+        return render_template('vulnerabilities/brute-force.html', msg=result)
 
 
 # Execute Main
 if __name__ == '__main__':
     app.run(debug=True)
-

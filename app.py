@@ -390,27 +390,28 @@ def brute_force():
         return render_template('vulnerabilities/brute-force.html', msg=result)
 
 
-# Directort traversal
-
+# Directory traversal
 @app.route('/directory-traversal', methods=['POST', 'GET'])
 @is_logged
 def directory_traversal():
     if not request.args:
-        return render_template('vulnerabilities/directory_traversal.html')
+        return render_template('vulnerabilities/directory-traversal.html')
     else:
         image_name = request.args.get('image')
-        if image_name=="NoneType":
-            return render_template("vulnerabilities/directory_traversal.html")
-        if image_name in ["cat","dog","monkey"]:
-            image_name= image_name + ".jpg"
-        path=os.path.join("/static/images", image_name)
-        if ".jpg" or ".png" in path:
-            return render_template("vulnerabilities/directory_traversal.html", user_image = path)
+        if image_name == "NoneType":
+            return render_template("vulnerabilities/directory-traversal.html")
+        elif image_name in ["cat", "dog", "monkey"]:
+            image_name = image_name + ".jpg"
+            path = os.path.join("/static/images", image_name)
+            return render_template("vulnerabilities/directory-traversal.html", user_image=path)
         else:
-            f = open(image_name , "r")
-            result=f.read()
-            print(result)
-            return render_template("vulnerabilities/directory_traversal.html", msg = result)
+            try:
+                f = open(image_name, "r")
+                result = f.read()
+                return render_template("vulnerabilities/directory-traversal.html", msg=result)
+            except FileNotFoundError as e:
+                return render_template("vulnerabilities/directory-traversal.html", msg="File not Found")
+
 
 # Execute Main
 if __name__ == '__main__':

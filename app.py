@@ -511,7 +511,7 @@ def ssti():
     else:
         name = request.form.get('name')
 
-        msg = Jinja2.from_string('Hi, ' + str(name) + "!").render()
+        msg = Jinja2.from_string('Hey, ' + str(name) + "!").render()
 
         return render_template('vulnerabilities/ssti.html', msg=msg)
 

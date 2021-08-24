@@ -1,6 +1,7 @@
 # Imports
 from flask import Flask, render_template, request, session, redirect, url_for
 from functools import wraps
+from random import randint
 from helper import functioning
 from helper.jwt import JWT
 from helper.db_manager import DBManager
@@ -8,6 +9,8 @@ from helper.mongodb_manager import MongoDBManager
 from vulnerabilities import SQLi, CommandInjection, BusinessLogic, XXE, XSS, BruteForce, NoSQL
 
 import os
+import requests
+import json
 
 # Upload Folder Configuration
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -23,7 +26,6 @@ jwt = JWT()
 dbm = DBManager()
 mongo_dbm = MongoDBManager()
 funcs = functioning
-
 
 '''
 Difficulty      Levels
@@ -450,9 +452,50 @@ def csrf():
         amount = request.form.get('amount')
 
         if int(account) == 110026325:
-            return render_template('vulnerabilities/csrf.html', msg="You got the money!")
+            return render_template('vulnerabilities/csrf.html', msg=f"You got the $${amount} money!")
         else:
             return render_template('vulnerabilities/csrf.html', msg="Try to get the Money")
+
+
+# SSRF
+@app.route('/ssrf', methods=['POST', 'GET'])
+@is_logged
+def ssrf():
+    if len(request.args) > 0:
+        product = request.args.get('product')
+        stock = request.args.get('stock')
+        return render_template('vulnerabilities/ssrf.html', product=product, stock=stock)
+
+    if len(request.form) < 1:
+        return render_template('vulnerabilities/ssrf.html')
+    else:
+        product = request.form.get('product')
+
+        requests.get('http://127.0.0.1:5000/api/stock/product?product='+product)
+
+        return redirect(url_for('check_stock', product=product))
+
+
+# API to check stock
+@app.route('/api/stock/product', methods=['GET', 'POST'])
+def check_stock():
+    if len(request.args) < 1:
+        return redirect(url_for('ssrf'))
+
+    else:
+        product = request.args.get('product')
+
+        try:
+            return requests.get(product).content
+        except requests.RequestException:
+            pass
+
+        if product != 'none':
+            stock = randint(10, 50)
+        else:
+            stock = 'Invalid'
+
+        return redirect(url_for('ssrf', product=product, stock=stock))
 
 
 # Execute Main

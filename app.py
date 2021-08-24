@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 from functools import wraps
 from random import randint
+from jinja2 import Environment
 from helper import functioning
 from helper.jwt import JWT
 from helper.db_manager import DBManager
@@ -10,7 +11,6 @@ from vulnerabilities import SQLi, CommandInjection, BusinessLogic, XXE, XSS, Bru
 
 import os
 import requests
-import json
 
 # Upload Folder Configuration
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -26,6 +26,7 @@ jwt = JWT()
 dbm = DBManager()
 mongo_dbm = MongoDBManager()
 funcs = functioning
+Jinja2 = Environment()
 
 '''
 Difficulty      Levels
@@ -291,7 +292,7 @@ def reflected_xss():
     if len(request.form) < 1:
         return render_template('vulnerabilities/reflected-xss.html')
     else:
-        entry = request.form.get('input')
+        entry = request.form.get('name')
 
         if session['level'] == 0:
             msg = "Hi, " + entry
@@ -428,17 +429,18 @@ def directory_traversal():
         image_name = request.args.get('image')
         if image_name == "NoneType":
             return render_template("vulnerabilities/directory-traversal.html")
-        elif image_name in ["cat", "dog", "monkey"]:
-            image_name = image_name + ".jpg"
-            path = os.path.join("/static/images", image_name)
-            return render_template("vulnerabilities/directory-traversal.html", user_image=path)
-        else:
-            try:
-                f = open(image_name, "r")
-                result = f.read()
-                return render_template("vulnerabilities/directory-traversal.html", msg=result)
-            except FileNotFoundError:
-                return render_template("vulnerabilities/directory-traversal.html", msg="File not Found")
+        elif session['level'] == 0:
+            if image_name in ["cat", "dog", "monkey"]:
+                image_name = image_name + ".jpg"
+                path = os.path.join("/static/images", image_name)
+                return render_template("vulnerabilities/directory-traversal.html", user_image=path)
+            else:
+                try:
+                    f = open(image_name, "r")
+                    result = f.read()
+                    return render_template("vulnerabilities/directory-traversal.html", msg=result)
+                except FileNotFoundError:
+                    return render_template("vulnerabilities/directory-traversal.html", msg="File not Found")
 
 
 # CSRF
@@ -448,13 +450,14 @@ def csrf():
     if len(request.form) < 1:
         return render_template('vulnerabilities/csrf.html')
     else:
-        account = request.form.get('account')
-        amount = request.form.get('amount')
+        if session['level'] == 0:
+            account = request.form.get('account')
+            amount = request.form.get('amount')
 
-        if int(account) == 110026325:
-            return render_template('vulnerabilities/csrf.html', msg=f"You got the $${amount} money!")
-        else:
-            return render_template('vulnerabilities/csrf.html', msg="Try to get the Money")
+            if int(account) == 110026325:
+                return render_template('vulnerabilities/csrf.html', msg=f"You got the $${amount} money!")
+            else:
+                return render_template('vulnerabilities/csrf.html', msg="Try to get the Money")
 
 
 # SSRF
@@ -485,17 +488,32 @@ def check_stock():
     else:
         product = request.args.get('product')
 
-        try:
-            return requests.get(product).content
-        except requests.RequestException:
-            pass
+        if session['level'] == 0:
+            try:
+                return requests.get(product).content
+            except requests.RequestException:
+                pass
 
-        if product != 'none':
-            stock = randint(10, 50)
-        else:
-            stock = 'Invalid'
+            if product != 'none':
+                stock = randint(10, 50)
+            else:
+                stock = 'Invalid'
 
-        return redirect(url_for('ssrf', product=product, stock=stock))
+            return redirect(url_for('ssrf', product=product, stock=stock))
+
+
+# SSTI
+@app.route('/ssti', methods=['POST', 'GET'])
+@is_logged
+def ssti():
+    if len(request.form) < 1:
+        return render_template('vulnerabilities/ssti.html')
+    else:
+        name = request.form.get('name')
+
+        msg = Jinja2.from_string('Hi, ' + str(name) + "!").render()
+
+        return render_template('vulnerabilities/ssti.html', msg=msg)
 
 
 # Execute Main

@@ -1,0 +1,22 @@
+{% extends "dashboard_layout.html" %}
+{% block content %}
+<div class="sql-injection">
+    <div class="text-center" style="margin-top: 5%; margin-bottom: 5%">
+        <h1>Server Side Template Injection</h1>
+    </div>
+    <div class="mt-3 container text-center">
+        <form method="post" action="/ssti">
+            <div style="margin-left: 35%">
+                <div class="mb-3 row">
+                    <label for="name" class="col-auto col-form-label">Enter your name</label>
+                    <div class="col-auto">
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+        <h6 class="text-center text-muted mt-3">{{ msg | safe}}</h6>
+    </div>
+</div>
+{% endblock %}

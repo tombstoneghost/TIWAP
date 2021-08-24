@@ -517,7 +517,7 @@ def ssti():
 
 
 # Security Misconfiguration
-@app.after_request()
+@app.after_request
 def after_request(response):
     response.headers['Content-Security-Policy'] = "script-src 'self' 'unsafe-inline'"
     return response

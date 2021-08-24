@@ -516,6 +516,13 @@ def ssti():
         return render_template('vulnerabilities/ssti.html', msg=msg)
 
 
+# Security Misconfiguration
+@app.after_request()
+def after_request(response):
+    response.headers['Content-Security-Policy'] = "script-src 'self' 'unsafe-inline'"
+    return response
+
+
 # Execute Main
 if __name__ == '__main__':
     app.run(debug=True)

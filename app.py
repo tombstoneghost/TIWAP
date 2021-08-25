@@ -465,6 +465,26 @@ def directory_traversal():
                     return render_template("vulnerabilities/directory-traversal.html", msg=result)
                 except FileNotFoundError:
                     return render_template("vulnerabilities/directory-traversal.html", msg="File not Found")
+        elif session['level'] == 1:
+            if image_name in ["cat", "dog", "monkey"]:
+                image_name = image_name + ".jpg"
+                path = os.path.join("/static/images", image_name)
+                return render_template("vulnerabilities/directory-traversal.html", user_image=path)
+            elif "../" in image_name:
+                image_name = image_name.replace("../", "")
+                try:
+                    f = open(image_name, "r")
+                    result = f.read()
+                    return render_template("vulnerabilities/directory-traversal.html", msg=result)
+                except FileNotFoundError:
+                    return render_template("vulnerabilities/directory-traversal.html", msg="File not Found")
+            else:
+                try:
+                    f = open(image_name, "r")
+                    result = f.read()
+                    return render_template("vulnerabilities/directory-traversal.html", msg=result)
+                except FileNotFoundError:
+                    return render_template("vulnerabilities/directory-traversal.html", msg="File not Found")
 
 
 # CSRF
@@ -474,11 +494,21 @@ def csrf():
     if len(request.form) < 1:
         return render_template('vulnerabilities/csrf.html')
     else:
-        if session['level'] == 0:
-            account = request.form.get('account')
-            amount = request.form.get('amount')
+        account = request.form.get('account')
+        amount = request.form.get('amount')
+        csrf_token = request.form.get('csrf_token')
 
-            if int(account) == 110026325:
+        if session['level'] == 0:
+            if int(account) == 110026325 and csrf_token == "QrhjoSBoa7AzQvCY9keq":
+                return render_template('vulnerabilities/csrf.html', msg=f"You got the $${amount} money!")
+            else:
+                return render_template('vulnerabilities/csrf.html', msg="Try to get the Money")
+        elif session['level'] == 1:
+            referer = request.headers.get('Referer')
+            host = request.headers.get('Host')
+
+            if int(account) == 110026325 and csrf_token == "QrhjoSBoa7AzQvCY9keq" and \
+                    "/csrf" in referer and host in referer:
                 return render_template('vulnerabilities/csrf.html', msg=f"You got the $${amount} money!")
             else:
                 return render_template('vulnerabilities/csrf.html', msg="Try to get the Money")

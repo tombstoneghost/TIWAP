@@ -17,7 +17,25 @@ def sqli_low(username, password):
         return "User Exists"
 
     try:
-        stmt = "SELECT * FROM users WHERE username='%s'" % (str(username))
+        stmt = "SELECT userid, username FROM users WHERE username='%s' AND password='%s'" \
+               % (str(username), str(password))
+
+        result = cur.execute(stmt)
+
+    except sqlite3.OperationalError as e:
+        return e
+
+    return result.fetchall()
+
+
+# SQL Injection - Medium
+def sqli_medium(userid):
+    global dbmanager
+
+    cur = dbmanager.get_db_connection().cursor()
+
+    try:
+        stmt = "SELECT userid, username FROM users WHERE userid='%s'" % (str(userid))
 
         result = cur.execute(stmt)
 
@@ -37,7 +55,7 @@ def blind_sqli_low(username, password):
         return "User Exists"
 
     try:
-        stmt = "SELECT * FROM users WHERE username='%s'" % (str(username))
+        stmt = "SELECT userid, username FROM users WHERE username='%s' AND password='%s'" % (str(username), str(password))
 
         result = cur.execute(stmt)
 

@@ -308,6 +308,11 @@ def reflected_xss():
 
         if session['level'] == 0:
             msg = "Hi, " + entry
+        if session['level'] == 1:
+            if "<script>" in entry.lower():
+                msg = "Try Harder"
+            else:
+                msg = "Hi, " + entry
 
         return render_template('vulnerabilities/reflected-xss.html', msg=msg)
 
@@ -323,11 +328,13 @@ def stored_xss():
 
         return render_template('vulnerabilities/stored-xss.html', data=data)
     else:
-        comment = request.form.get('input')
+        comment = request.form.get('comment')
         xss = XSS
 
         if session['level'] == 0:
             msg, data = xss.stored_xss_low(comment=comment)
+        if session['level'] == 1:
+            msg, data = xss.stored_xss_medium(comment=comment)
 
         return render_template('vulnerabilities/stored-xss.html', data=data, msg=msg)
 
@@ -344,6 +351,11 @@ def dom_xss():
 
         if session['level'] == 0:
             msg = "Hi, " + entry
+        if session['level'] == 1:
+            if "<script>" in entry.lower():
+                msg = "Try Harder"
+            else:
+                msg = "Hi, " + entry
 
         return render_template('vulnerabilities/dom-xss.html', msg=msg)
 

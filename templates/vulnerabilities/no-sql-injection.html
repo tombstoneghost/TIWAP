@@ -7,12 +7,29 @@
     <div class="mt-3 container text-center">
         <div>
             <form method="post" action="/no-sql-injection">
-                <div>
-                    <label for="username" class="col-auto col-form-label">Car to Search</label>
-                    <div class="col-auto" style="margin-left: 32%">
-                        <input type="text" class="form-control" id="car" name="car" style="width: 50%">
+                {% if level == 0 %}
+                    <div>
+                        <label for="car" class="col-auto col-form-label">Car to Search</label>
+                        <div class="col-auto" style="margin-left: 32%">
+                            <input type="text" class="form-control" id="car" name="car" style="width: 50%">
+                        </div>
                     </div>
-                </div>
+                {% endif %}
+                {% if level == 1 %}
+                    <div class="row" style="margin-left: 40%">
+                        <div class="col-auto">
+                            <p><b>Select Car: </b></p>
+                        </div>
+                        <div class="col-auto">
+                            <select id="userid" name="userid" class="btn btn-success" style="margin-right: 1%">
+                                <option value="720d">720d</option>
+                                <option value="G63">G63</option>
+                                <option value="A8">A8</option>
+                            </select>
+                        </div>
+                    </div>
+                {% endif %}
+
                 <button type="submit" class="btn btn-success mt-3">Search</button>
             </form>
         </div>

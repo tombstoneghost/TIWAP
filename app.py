@@ -161,15 +161,14 @@ def no_sql_injection():
     data = None
     if len(request.form) < 1:
         data = mongo_dbm.get_data_all()
-        return render_template('vulnerabilities/no-sql-injection.html', data=data)
+        return render_template('vulnerabilities/no-sql-injection.html', data=data, level=session['level'])
     else:
         query = request.form.get('car')
         nosqli = NoSQL
 
-        if session['level'] == 0:
+        if session['level'] == 0 or session['level'] == 1:
             data = nosqli.no_sql_injection_low(query)
-
-        return render_template('vulnerabilities/no-sql-injection.html', data=data)
+            return render_template('vulnerabilities/no-sql-injection.html', data=data, level=session['level'])
 
 
 # Command Injection

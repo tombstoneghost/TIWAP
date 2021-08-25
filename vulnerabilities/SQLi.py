@@ -63,3 +63,20 @@ def blind_sqli_low(username, password):
         return ""
 
     return result.fetchall()
+
+
+# Bling SQL Injection - Medium
+def blind_sqli_medium(userid):
+    global dbmanager
+
+    cur = dbmanager.get_db_connection().cursor()
+
+    try:
+        stmt = "SELECT userid, username FROM users WHERE userid='%s'" % (str(userid))
+
+        result = cur.execute(stmt)
+
+    except sqlite3.OperationalError as e:
+        return ""
+
+    return result.fetchall()

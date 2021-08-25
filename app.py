@@ -136,15 +136,22 @@ def sql_injection_index():
 @is_logged
 def blind_sql_injection_index():
     if len(request.form) < 1:
-        return render_template('vulnerabilities/blind-sql-injection.html')
+        return render_template('vulnerabilities/blind-sql-injection.html', level=session['level'])
     else:
-        username = request.form.get('username')
-        password = request.form.get('password')
         sqli = SQLi
 
         if session['level'] == 0:
+            username = request.form.get('username')
+            password = request.form.get('password')
+
             result = sqli.blind_sqli_low(username=username, password=password)
-            return render_template('vulnerabilities/blind-sql-injection.html', msg=result)
+            return render_template('vulnerabilities/blind-sql-injection.html', msg=result, level=0)
+
+        if session['level'] == 1:
+            userid = request.form.get('userid')
+            result = sqli.blind_sqli_medium(userid=userid)
+
+            return render_template('vulnerabilities/sql-injection.html', msg=result, level=1)
 
 
 # NoSQL Injection

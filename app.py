@@ -571,7 +571,17 @@ def ssti():
     else:
         name = request.form.get('name')
 
-        msg = Jinja2.from_string('Hey, ' + str(name) + "!").render()
+        if session['level'] == 0:
+            msg = Jinja2.from_string('Hey, ' + str(name) + "!").render()
+        elif session['level'] == 1:
+            filters = ["config", "self", "_", '"']
+
+            for f in filters:
+                if f in name:
+                    msg = "Try Harder"
+                    return render_template('vulnerabilities/ssti.html', msg=msg)
+
+            msg = Jinja2.from_string('Hey, ' + str(name) + "!").render()
 
         return render_template('vulnerabilities/ssti.html', msg=msg)
 

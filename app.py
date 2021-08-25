@@ -528,7 +528,13 @@ def ssrf():
     else:
         product = request.form.get('product')
 
-        requests.get('http://127.0.0.1:5000/api/stock/product?product='+product)
+        if session['level'] == 0:
+            requests.get('http://127.0.0.1:5000/api/stock/product?product='+product)
+        elif session['level'] == 1:
+            if "127.0.0.1" in product:
+                return render_template('vulnerabilities/ssrf.html', product=product, stock="NULL")
+            else:
+                requests.get('http://127.0.0.1:5000/api/stock/product?product=' + product)
 
         return redirect(url_for('check_stock', product=product))
 

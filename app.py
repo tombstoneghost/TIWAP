@@ -1,5 +1,5 @@
 # Imports
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, jsonify
 from functools import wraps
 from random import randint
 from jinja2 import Environment
@@ -8,6 +8,7 @@ from helper.jwt import JWT
 from helper.db_manager import DBManager
 from helper.mongodb_manager import MongoDBManager
 from vulnerabilities import SQLi, CommandInjection, BusinessLogic, XXE, XSS, BruteForce, NoSQL
+from OpenSSL import SSL
 
 import os
 import requests
@@ -15,6 +16,9 @@ import requests
 # Upload Folder Configuration
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'uploads')
+
+# Certificate Configuration
+context = ('certificate/server.crt', 'certificate/server.key')
 
 # Initialize Flask
 app = Flask(__name__)
@@ -592,7 +596,12 @@ def after_request(response):
     response.headers['Content-Security-Policy'] = "script-src 'self' 'unsafe-inline'"
     return response
 
+# Improper Certificate Validation
+@app.route('/improper-cert-valid')
+@is_logged
+def improper_certificate_validation():
+    return render_template('vulnerabilities/improper-certificate-validation.html')
 
 # Execute Main
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, ssl_context=context)

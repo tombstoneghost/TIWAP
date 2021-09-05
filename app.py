@@ -1,5 +1,5 @@
 # Imports
-from flask import Flask, render_template, request, session, redirect, url_for, jsonify
+from flask import Flask, render_template, request, session, redirect, url_for
 from functools import wraps
 from random import randint
 from jinja2 import Environment
@@ -8,7 +8,6 @@ from helper.jwt import JWT
 from helper.db_manager import DBManager
 from helper.mongodb_manager import MongoDBManager
 from vulnerabilities import SQLi, CommandInjection, BusinessLogic, XXE, XSS, BruteForce, NoSQL
-from OpenSSL import SSL
 
 import os
 import requests
@@ -162,7 +161,6 @@ def blind_sql_injection_index():
 @app.route('/no-sql-injection', methods=['POST', 'GET'])
 @is_logged
 def no_sql_injection():
-    data = None
     if len(request.form) < 1:
         data = mongo_dbm.get_data_all()
         return render_template('vulnerabilities/no-sql-injection.html', data=data, level=session['level'])
@@ -289,13 +287,15 @@ def sensitive_data_exposure_low_admin_config():
 def xxe_index():
     result = None
     if len(request.data) < 1:
-        return render_template('vulnerabilities/xml-external-entities.html')
+        return render_template('vulnerabilities/xml-external-entities.html', level=session['level'])
     else:
         data = request.data
         xxe = XXE
 
         if session['level'] == 0:
             result = xxe.xxe_low(data=data)
+        if session['level'] == 1:
+            result = xxe.xxe_medium(data=data)
 
         return result, {'Content-Type': 'application/xml; charset=UTF-8'}
 
@@ -573,6 +573,7 @@ def ssti():
     if len(request.form) < 1:
         return render_template('vulnerabilities/ssti.html')
     else:
+        msg = ""
         name = request.form.get('name')
 
         if session['level'] == 0:
@@ -590,17 +591,21 @@ def ssti():
         return render_template('vulnerabilities/ssti.html', msg=msg)
 
 
+'''
 # Security Misconfiguration
 @app.after_request
 def after_request(response):
     response.headers['Content-Security-Policy'] = "script-src 'self' 'unsafe-inline'"
     return response
+'''
+
 
 # Improper Certificate Validation
 @app.route('/improper-cert-valid')
 @is_logged
 def improper_certificate_validation():
     return render_template('vulnerabilities/improper-certificate-validation.html')
+
 
 # Execute Main
 if __name__ == '__main__':

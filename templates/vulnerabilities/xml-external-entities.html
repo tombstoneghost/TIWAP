@@ -26,6 +26,10 @@
 
         let data = "<user><name>" + name + "</name></user>";
 
+        {% if level == 1 %}
+            data = window.btoa(data)
+        {% endif %}
+
         $.ajax({
             type: "POST",
             url: "xxe",

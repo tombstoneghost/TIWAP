@@ -296,7 +296,7 @@ def xxe_index():
             result = xxe.xxe_low(data=data)
         if session['level'] == 1:
             result = xxe.xxe_medium(data=data)
-        if session['level'] == 3:
+        if session['level'] == 2:
             if request.headers.get('Content-Type') == 'text/xml':
                 result = xxe.xxe_medium(data=data)
 

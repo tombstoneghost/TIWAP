@@ -296,6 +296,9 @@ def xxe_index():
             result = xxe.xxe_low(data=data)
         if session['level'] == 1:
             result = xxe.xxe_medium(data=data)
+        if session['level'] == 3:
+            if request.headers.get('Content-Type') == 'text/xml':
+                result = xxe.xxe_medium(data=data)
 
         return result, {'Content-Type': 'application/xml; charset=UTF-8'}
 
@@ -378,6 +381,13 @@ def html_injection():
             msg = "Hi, " + entry + ". How are you???"
 
         return render_template('vulnerabilities/html-injection.html', msg=msg)
+
+
+# Improper Certificate Validation
+@app.route('/improper-cert-valid')
+@is_logged
+def improper_certificate_validation():
+    return render_template('vulnerabilities/improper-certificate-validation.html')
 
 
 # Hardcoded Credentials
@@ -598,13 +608,6 @@ def after_request(response):
     response.headers['Content-Security-Policy'] = "script-src 'self' 'unsafe-inline'"
     return response
 '''
-
-
-# Improper Certificate Validation
-@app.route('/improper-cert-valid')
-@is_logged
-def improper_certificate_validation():
-    return render_template('vulnerabilities/improper-certificate-validation.html')
 
 
 # Execute Main

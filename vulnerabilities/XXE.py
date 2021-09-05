@@ -23,12 +23,4 @@ def xxe_medium(data):
     decode_data = base64.b64decode(data)
     data = unquote(decode_data)
 
-    tree = etree.fromstring(data)
-
-    for child in tree:
-        if child.tag == "name":
-            name = "Hey! " + child.text
-
-    result = "<result><msg>%s</msg><result>" % name
-
-    return result
+    return xxe_low(data=data)

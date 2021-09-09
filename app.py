@@ -185,6 +185,10 @@ def cmd_injection():
         ci = CommandInjection
         if session['level'] == 0:
             output = ci.cmd_injection_low(query=query)
+        elif session['level'] == 1:
+            output = ci.cmd_injection_medium(query=query)
+        else:
+            pass
 
         return render_template('vulnerabilities/command_injection.html', msg=output)
 

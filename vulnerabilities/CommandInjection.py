@@ -14,3 +14,11 @@ def cmd_injection_low(query):
     output = stream.read()
 
     return output
+
+# Medium Vulnerability
+def cmd_injection_medium(query):
+    if ';' or '&&' or '||' in query:
+        message = "Input query blocked: " + query
+        return message
+    else:
+        return cmd_injection_low(query)

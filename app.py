@@ -551,6 +551,11 @@ def ssrf():
                 return render_template('vulnerabilities/ssrf.html', product=product, stock="NULL")
             else:
                 requests.get('http://127.0.0.1:5000/api/stock/product?product=' + product)
+        elif session['level'] == 2:
+            if "0000:0000:0000:0000:0000:ffff:7f00:0001" in product:
+                requests.get('http://127.0.0.1:5000/api/stock/product?product=' + product)
+            else:
+                return render_template('vulnerabilities/ssrf.html', product=product, stock="NULL")
 
         return redirect(url_for('check_stock', product=product))
 
@@ -564,18 +569,20 @@ def check_stock():
     else:
         product = request.args.get('product')
 
-        if session['level'] == 0:
-            try:
-                return requests.get(product).content
-            except requests.RequestException:
-                pass
+        if session['level'] == 1 or session['level'] == 2:
+            product = product.split("&")[1]
 
-            if product != 'none':
-                stock = randint(10, 50)
-            else:
-                stock = 'Invalid'
+        try:
+            return requests.get(product).content
+        except requests.RequestException:
+            pass
 
-            return redirect(url_for('ssrf', product=product, stock=stock))
+        if product != 'none':
+            stock = randint(10, 50)
+        else:
+            stock = 'Invalid'
+
+        return redirect(url_for('ssrf', product=product, stock=stock))
 
 
 # SSTI

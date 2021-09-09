@@ -23,3 +23,23 @@ def stored_xss_medium(comment):
         return "Try Harder", {}
     else:
         return stored_xss_low(comment)
+
+
+# Common Filter - Hard
+def filter_input(data):
+    filters = ["onerror", "onfocus", "onfocusin", "onfocusout", "onload", "onresize", "onscroll", "onclick",
+               "onkeydown", "onkeypress", "onkeyup", "onselect"]
+
+    for f in filters:
+        if f in data:
+            return True
+
+    return False
+
+
+# Stored - Hard
+def stored_xss_hard(comment):
+    if "<script>" in comment.lower() or filter_input(data=comment):
+        return "Try Harder", {}
+    else:
+        return stored_xss_low(comment)

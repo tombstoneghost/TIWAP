@@ -12,6 +12,7 @@ from vulnerabilities import SQLi, CommandInjection, BusinessLogic, XXE, XSS, Bru
 import os
 import requests
 import base64
+import time
 
 # Upload Folder Configuration
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -323,6 +324,11 @@ def reflected_xss():
                 msg = "Try Harder"
             else:
                 msg = "Hi, " + entry
+        if session['level'] == 2:
+            if "<script>" in entry.lower() or XSS.filter_input(data=entry):
+                msg = "Try Harder"
+            else:
+                msg = "Hi, " + entry
 
         return render_template('vulnerabilities/reflected-xss.html', msg=msg)
 
@@ -345,6 +351,8 @@ def stored_xss():
             msg, data = xss.stored_xss_low(comment=comment)
         if session['level'] == 1:
             msg, data = xss.stored_xss_medium(comment=comment)
+        if session['level'] == 2:
+            msg, data = xss.stored_xss_hard(comment=comment)
 
         return render_template('vulnerabilities/stored-xss.html', data=data, msg=msg)
 
@@ -366,6 +374,12 @@ def dom_xss():
                 msg = "Try Harder"
             else:
                 msg = "Hi, " + entry
+        if session['level'] == 2:
+            if session['level'] == 2:
+                if "<script>" in entry.lower() or XSS.filter_input(data=entry):
+                    msg = "Try Harder"
+                else:
+                    msg = "Hi, " + entry
 
         return render_template('vulnerabilities/dom-xss.html', msg=msg)
 
@@ -455,6 +469,9 @@ def brute_force():
         bf = BruteForce
 
         if session['level'] == 0:
+            result = bf.brute_force_low(username=username, password=password)
+        if session['level'] == 1:
+            time.sleep(2.0)
             result = bf.brute_force_low(username=username, password=password)
 
         return render_template('vulnerabilities/brute-force.html', msg=result)

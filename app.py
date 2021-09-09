@@ -11,6 +11,7 @@ from vulnerabilities import SQLi, CommandInjection, BusinessLogic, XXE, XSS, Bru
 
 import os
 import requests
+import base64
 
 # Upload Folder Configuration
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -604,6 +605,10 @@ def ssti():
                 if f in name:
                     msg = "Try Harder"
                     return render_template('vulnerabilities/ssti.html', msg=msg)
+
+            msg = Jinja2.from_string('Hey, ' + str(name) + "!").render()
+        elif session['level'] == 2:
+            name = base64.b64decode(name)
 
             msg = Jinja2.from_string('Hey, ' + str(name) + "!").render()
 

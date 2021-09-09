@@ -15,9 +15,10 @@ def cmd_injection_low(query):
 
     return output
 
+
 # Medium Vulnerability
 def cmd_injection_medium(query):
-    if ';' or '&&' or '||' in query:
+    if (';' or '&&' or '||') in query:
         message = "Input query blocked: " + query
         return message
     else:

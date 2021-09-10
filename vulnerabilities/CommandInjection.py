@@ -23,3 +23,12 @@ def cmd_injection_medium(query):
         return message
     else:
         return cmd_injection_low(query)
+
+
+# Hard Vulnerability
+def cmd_injection_hard(query):
+    if ("&" or ";" or '| ' or '-' or '$' or '(' or ')' or '`' or '||') in query:
+        message = "Input query blocked: " + query
+        return message
+    else:
+        return cmd_injection_low(query)

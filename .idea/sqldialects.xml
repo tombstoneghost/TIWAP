@@ -2,6 +2,7 @@
 <project version="4">
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/app.py" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/helper/db_manager.py" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/vulnerabilities/SQLi.py" dialect="GenericSQL" />
   </component>
 </project>

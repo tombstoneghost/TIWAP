@@ -6,8 +6,8 @@ from hashlib import md5
 class DBManager:
     def __init__(self):
         # Initialize Database
-        self.conn = sqlite3.connect('TIWAF.db', check_same_thread=False)
-        self.cur = self.conn.cursor()
+        self.conn = None
+        self.cur = None
 
     def create_db_connection(self):
         self.conn = sqlite3.connect('TIWAF.db', check_same_thread=False)
@@ -18,6 +18,9 @@ class DBManager:
 
     def close_db_connection(self):
         return self.cur.close()
+
+    def commit_db(self):
+        return self.conn.commit()
 
     def check_user(self, username):
         self.create_db_connection()
@@ -35,7 +38,6 @@ class DBManager:
         self.create_db_connection()
         result = self.cur.execute("SELECT username, password FROM users WHERE username = ?", (username,))
 
-
         if type(result) != 'NoneType':
             data = self.cur.fetchone()
             self.close_db_connection()
@@ -51,7 +53,6 @@ class DBManager:
         self.create_db_connection()
         result = self.cur.execute("SELECT comment FROM comments")
 
-
         if type(result) != 'NoneType':
             data = self.cur.fetchall()
             self.close_db_connection()
@@ -61,6 +62,7 @@ class DBManager:
         self.create_db_connection()
         result = self.cur.execute('INSERT INTO comments VALUES(?)', (comment, ))
         self.close_db_connection()
+        self.commit_db()
 
         if result:
             return True
@@ -89,6 +91,7 @@ class DBManager:
         self.create_db_connection()
         result = self.cur.execute("INSERT INTO names VALUES(?)", (str(name), ))
         self.close_db_connection()
+        self.commit_db()
 
         if result:
             return True

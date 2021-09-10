@@ -17,6 +17,11 @@
             <button type="submit" class="btn btn-success">Submit</button>
         </form>
         <h6 class="text-center text-muted mt-3">{{ msg | safe}}</h6>
+        <ul style="margin-top: 2%;">
+            {% for d in data %}
+                <li>{{ d[0] | safe}}</li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 {% endblock %}

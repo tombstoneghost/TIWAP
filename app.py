@@ -408,7 +408,8 @@ def html_injection():
         if session['level'] == 0:
             return render_template('vulnerabilities/html-injection.html')
         if session['level'] == 1:
-            return render_template('vulnerabilities/stored-html-injection.html')
+            data = dbm.get_names()
+            return render_template('vulnerabilities/stored-html-injection.html', data=data)
     else:
         entry = request.form.get('input')
         html = HTMLInjection
@@ -421,7 +422,6 @@ def html_injection():
             entry = "Hola! " + entry + ". How are you?"
             msg, data = html.stored_html(name=entry)
             return render_template('vulnerabilities/stored-html-injection.html', data=data, msg=msg)
-
 
 
 # Improper Certificate Validation

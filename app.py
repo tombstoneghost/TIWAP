@@ -167,6 +167,12 @@ def blind_sql_injection():
 
             return render_template('vulnerabilities/sql-injection.html', msg=result, level=1)
 
+        if session['level'] == 2:
+            usernameId = request.form.get('usernameId')
+            result = sqli.blind_sqli_hard(usernameid=usernameId)
+
+            return render_template('vulnerabilities/sql-injection.html', msg=result, level=2)
+
 
 # NoSQL Injection
 @app.route('/no-sql-injection', methods=['POST', 'GET'])

@@ -103,3 +103,25 @@ def blind_sqli_medium(userid):
         return ""
 
     return result.fetchall()
+
+
+# Blind SQL Injection - Hard
+def blind_sqli_hard(usernameid):
+    global dbmanager
+
+    cur = dbmanager.get_db_connection().cursor()
+
+    if "1'" in usernameid or "1'OR1=1" in usernameid or "1' OR 1=1" in usernameid or "1' OR '1'='1" in usernameid:
+        return "Try Harder"
+
+    if "#" in usernameid:
+        usernameid = usernameid.replace("#", "'")
+
+    try:
+        stmt = "SELECT userid, username FROM users WHERE userid='%s'" % (str(usernameid))
+
+        result = cur.execute(stmt)
+    except sqlite3.OperationalError as e:
+        return ""
+
+    return result.fetchall()

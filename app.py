@@ -102,6 +102,7 @@ def dashboard():
 def settings():
     if len(request.args) < 1:
         level = funcs.get_level_by_code(session['level'])
+        print(session['level'])
         return render_template('settings.html', level=level)
     else:
         level = request.args.get('level')
@@ -110,13 +111,15 @@ def settings():
 
         level = str(level).capitalize()
 
+        print(session['level'])
+
         return render_template('settings.html', level=level, msg="Difficult Set to " + level)
 
 
 # SQL Injection
 @app.route('/sql-injection', methods=['POST', 'GET'])
 @is_logged
-def sql_injection_index():
+def sql_injection():
     if len(request.form) < 1:
         return render_template('vulnerabilities/sql-injection.html', level=session['level'])
     else:
@@ -135,11 +138,17 @@ def sql_injection_index():
 
             return render_template('vulnerabilities/sql-injection.html', msg=result, level=1)
 
+        if session['level'] == 2:
+            usernameId = request.form.get('usernameId')
+            result = sqli.sqli_hard(usernameid=usernameId)
+
+            return render_template('vulnerabilities/sql-injection.html', msg=result, level=2)
+
 
 # Blind SQL Injection
 @app.route('/blind-sql-injection', methods=['POST', 'GET'])
 @is_logged
-def blind_sql_injection_index():
+def blind_sql_injection():
     if len(request.form) < 1:
         return render_template('vulnerabilities/blind-sql-injection.html', level=session['level'])
     else:

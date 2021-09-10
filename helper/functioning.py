@@ -8,7 +8,7 @@ def get_level_by_code(code):
     if code == 1:
         return "Medium"
     if code == 2:
-        return "High"
+        return "Hard"
 
 
 # Get Level by Name
@@ -18,4 +18,4 @@ def get_level_by_name(name):
     if name == 'medium':
         return 1
     if name == 'hard':
-        return 3
+        return 2

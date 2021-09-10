@@ -45,6 +45,28 @@ def sqli_medium(userid):
     return result.fetchall()
 
 
+# SQL Injection - Hard
+def sqli_hard(usernameid):
+    global dbmanager
+
+    cur = dbmanager.get_db_connection().cursor()
+
+    if "1'" in usernameid or "1'OR1=1" in usernameid or "1' OR 1=1" in usernameid or "1' OR '1'='1" in usernameid:
+        return "Try Harder"
+
+    if "#" in usernameid:
+        usernameid = usernameid.replace("#", "'")
+
+    try:
+        stmt = "SELECT userid, username FROM users WHERE userid='%s'" % (str(usernameid))
+
+        result = cur.execute(stmt)
+    except sqlite3.OperationalError as e:
+        return e
+
+    return result.fetchall()
+
+
 # Blind SQL Injection - Low
 def blind_sqli_low(username, password):
     global dbmanager
@@ -55,11 +77,12 @@ def blind_sqli_low(username, password):
         return "User Exists"
 
     try:
-        stmt = "SELECT userid, username FROM users WHERE username='%s' AND password='%s'" % (str(username), str(password))
+        stmt = "SELECT userid, username FROM users WHERE username='%s' AND password='%s'" \
+               % (str(username), str(password))
 
         result = cur.execute(stmt)
 
-    except sqlite3.OperationalError as e:
+    except sqlite3.OperationalError:
         return ""
 
     return result.fetchall()
@@ -76,7 +99,7 @@ def blind_sqli_medium(userid):
 
         result = cur.execute(stmt)
 
-    except sqlite3.OperationalError as e:
+    except sqlite3.OperationalError:
         return ""
 
     return result.fetchall()

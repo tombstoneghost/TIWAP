@@ -7,7 +7,7 @@ from helper import functioning
 from helper.jwt import JWT
 from helper.db_manager import DBManager
 from helper.mongodb_manager import MongoDBManager
-from vulnerabilities import SQLi, CommandInjection, BusinessLogic, XXE, XSS, BruteForce, NoSQL
+from vulnerabilities import SQLi, CommandInjection, BusinessLogic, XXE, XSS, BruteForce, NoSQL, HTMLInjection
 
 import os
 import requests
@@ -405,14 +405,23 @@ def dom_xss():
 def html_injection():
     msg = None
     if len(request.form) < 1:
-        return render_template('vulnerabilities/html-injection.html')
+        if session['level'] == 0:
+            return render_template('vulnerabilities/html-injection.html')
+        if session['level'] == 1:
+            return render_template('vulnerabilities/stored-html-injection.html')
     else:
         entry = request.form.get('input')
+        html = HTMLInjection
 
         if session['level'] == 0:
             msg = "Hi, " + entry + ". How are you???"
+            return render_template('vulnerabilities/html-injection.html', msg=msg)
 
-        return render_template('vulnerabilities/html-injection.html', msg=msg)
+        if session['level'] == 1:
+            entry = "Hola! " + entry + ". How are you?"
+            msg, data = html.stored_html(name=entry)
+            return render_template('vulnerabilities/stored-html-injection.html', data=data, msg=msg)
+
 
 
 # Improper Certificate Validation

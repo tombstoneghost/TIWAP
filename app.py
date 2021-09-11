@@ -14,6 +14,7 @@ import os
 import requests
 import base64
 import time
+import binascii
 
 # Upload Folder Configuration
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -497,18 +498,35 @@ def insecure_file_upload():
             full_filename = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
             uploaded_file.save(full_filename)
             result = "File uploaded successfully!"
+
         elif session['level'] == 1:
             ext = uploaded_file.filename.split('.')[1]
 
             if uploaded_file.filename == '':
                 result = "No file selected!"
                 return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
-            elif ext != 'img' and ext != 'jpg' and ext != 'jpeg':
+            elif ext != 'img' or ext != 'jpg' or ext != 'jpeg' or ext != 'png':
                 result = "File format not supported!"
             else:
                 full_filename = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
                 uploaded_file.save(full_filename)
                 result = "File uploaded successfully!"
+
+        elif session['level'] == 2:
+            binary = uploaded_file.read(3)
+
+            if uploaded_file.filename == '':
+                result = "No file selected!"
+                return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
+
+            elif (b'ffd8ff' or b'89504e') in binascii.hexlify(binary):
+                full_filename = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+                uploaded_file.save(full_filename)
+                result = "File uploaded successfully!"
+
+            else:
+                result = "Try Harder!"
+
 
         return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
 

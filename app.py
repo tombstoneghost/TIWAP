@@ -439,7 +439,7 @@ def dom_xss():
 @is_logged
 def html_injection():
     if len(request.form) < 1:
-        if session['level'] == 0:
+        if session['level'] == 0 or session['level'] == 2:
             return render_template('vulnerabilities/html-injection.html')
         if session['level'] == 1:
             data = dbm.get_names()
@@ -452,10 +452,22 @@ def html_injection():
             msg = "Hi, " + entry + ". How are you???"
             return render_template('vulnerabilities/html-injection.html', msg=msg)
 
-        if session['level'] == 1:
+        elif session['level'] == 1:
             entry = "Hola! " + entry + ". How are you?"
             msg, data = html.stored_html(name=entry)
             return render_template('vulnerabilities/stored-html-injection.html', data=data, msg=msg)
+
+        elif session['level'] == 2:
+            try:
+                if "%" in entry:
+                    entry = parse.unquote(entry)
+                    msg = "Hola! " + entry + ", How are you? "
+                else:
+                    msg = "Try Harder"
+            except error:
+                msg = "Try Harder"
+
+            return render_template('vulnerabilities/html-injection.html', msg=msg)
 
 
 # Improper Certificate Validation

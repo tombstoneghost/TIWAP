@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, session, redirect, url_for, s
 from functools import wraps
 from random import randint
 from jinja2 import Environment
+from urllib import parse, error
 from helper import functioning
 from helper.jwt import JWT
 from helper.db_manager import DBManager
@@ -211,10 +212,9 @@ def cmd_injection():
 
 
 # Business Logic Flaw
-@app.route('/business-logic', methods=['POST', 'GET','HEAD'])
+@app.route('/business-logic', methods=['POST', 'GET', 'HEAD'])
 @is_logged
 def business_logic():
-    result = None
     if len(request.form) < 1:
         if session['level'] == 0:
             return render_template('vulnerabilities/business-logic.html')
@@ -437,7 +437,6 @@ def dom_xss():
 @app.route('/html-injection', methods=['POST', 'GET'])
 @is_logged
 def html_injection():
-    msg = None
     if len(request.form) < 1:
         if session['level'] == 0:
             return render_template('vulnerabilities/html-injection.html')
@@ -577,6 +576,17 @@ def directory_traversal():
                     return render_template("vulnerabilities/directory-traversal.html", msg=result)
                 except FileNotFoundError:
                     return render_template("vulnerabilities/directory-traversal.html", msg="File not Found")
+        elif session['level'] == 2:
+            try:
+                url = parse.unquote(image_name)
+
+                f = open(url, 'r')
+                result = f.read()
+
+            except error:
+                result = "Try Harder"
+
+            return render_template('vulnerabilities/directory-traversal.html', msg=result)
 
 
 # CSRF

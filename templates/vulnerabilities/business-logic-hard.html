@@ -1,0 +1,38 @@
+{% extends "dashboard_layout.html" %}
+{% block content %}
+<div class="">
+    <div class="text-center" style="margin-top: 5%; margin-bottom: 5%">
+        <h1>Business Logic Flaw</h1>
+    </div>
+    <div class="text-center" style="margin-top: 5%; margin-bottom: 5%">
+        <h4>Reset Password</h4>
+        <h4>Your credentials: Not-admin:password123, Change password of "Admin"</h4>
+    </div>
+    <div class="mt-3 container text-center">
+        <form method="post" action="/business-logic">
+            <div style="margin-left: 35%">
+                <div class="mb-3 row">
+                    <label for="username" class="col-auto col-form-label">Username</label>
+                    <div class="col-auto">
+                        <input type="text" class="form-control" id="username" name="username">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="password" class="col-auto col-form-label" style="margin-right: 5px">Current Password</label>
+                    <div class="col-auto">
+                        <input type="password" class="form-control" id="password" name="password">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="passwordn" class="col-auto col-form-label" style="margin-right: 5px">New Password</label>
+                    <div class="col-auto">
+                        <input type="password" class="form-control" id="passwordn" name="passwordn">
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+    </div>
+    <h6 class="text-center text-muted mt-3">{{ msg }}</h6>
+</div>
+{% endblock %}

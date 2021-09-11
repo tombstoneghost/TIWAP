@@ -220,6 +220,9 @@ def business_logic():
             return render_template('vulnerabilities/business-logic.html')
         elif session['level'] == 1:
             return render_template('vulnerabilities/business-logic-medium.html')
+        elif session['level'] == 2:
+            return render_template('vulnerabilities/business-logic-hard.html')
+
     else:
         username = request.form.get('username')
         password = request.form.get('password')
@@ -231,10 +234,15 @@ def business_logic():
 
         elif session['level'] == 1:
             if request.method == 'HEAD':
-                result = 'Success'
+                result = 'You are now an ADMIN'
             else:
-                result = 'Failed'
+                result = 'Failed... Try harder!!!'
             return render_template('vulnerabilities/business-logic-medium.html', msg=result)
+        
+        elif session['level'] == 2:
+            passwordn = request.form.get('passwordn')
+            result = bl.business_logic_hard(username=username, passwordn=passwordn)
+            return render_template('vulnerabilities/business-logic-hard.html', msg=result)
 
 
 # Sensitive Data Exposure

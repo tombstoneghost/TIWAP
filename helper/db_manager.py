@@ -49,6 +49,16 @@ class DBManager:
             if password == password_db:
                 return True
 
+    def update_pass(self, username, password):
+        self.create_db_connection()
+        password = md5(bytes(password, encoding='utf-8')).hexdigest()
+        result = self.cur.execute("UPDATE users SET password= ? WHERE username= ?", (password, username))
+        
+        if result:
+            return True
+        return False
+
+
     def get_comments(self):
         self.create_db_connection()
         result = self.cur.execute("SELECT comment FROM comments")

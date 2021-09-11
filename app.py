@@ -612,6 +612,8 @@ def directory_traversal():
 @is_logged
 def csrf():
     if len(request.form) < 1:
+        if session['level'] == 2:
+            return render_template('vulnerabilities/under-construction.html')
         return render_template('vulnerabilities/csrf.html')
     else:
         account = request.form.get('account')
@@ -632,6 +634,8 @@ def csrf():
                 return render_template('vulnerabilities/csrf.html', msg=f"You got the $${amount} money!")
             else:
                 return render_template('vulnerabilities/csrf.html', msg="Try to get the Money")
+        elif session['level'] == 2:
+            return render_template('vulnerabilities/under-construction.html')
 
 
 # SSRF

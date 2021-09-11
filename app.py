@@ -1,5 +1,5 @@
 # Imports
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, send_from_directory
 from functools import wraps
 from random import randint
 from jinja2 import Environment
@@ -22,7 +22,7 @@ UPLOAD_FOLDER = os.path.join(APP_ROOT, 'uploads')
 context = ('certificate/server.crt', 'certificate/server.key')
 
 # Initialize Flask
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='')
 app.secret_key = 'l0G1n_53cR37_k3y'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -247,6 +247,8 @@ def sensitive_data_exposure():
             return render_template('vulnerabilities/sensitive-data-exposure-low.html')
         if session['level'] == 1:
             return render_template('vulnerabilities/sensitive-data-exposure-medium.html')
+        if session['level'] == 2:
+            return render_template('vulnerabilities/sensitive-data-exposure-hard.html')
     else:
         if session['level'] == 0:
             username = request.form.get('username')
@@ -258,6 +260,9 @@ def sensitive_data_exposure():
             return render_template('vulnerabilities/sensitive-data-exposure-low.html', msg=result)
         elif session['level'] == 1:
             return redirect(url_for('sensitive_data_exposure_low_user'))
+
+        elif session['level'] == 2:
+            return render_template('vulnerabilities/sensitive-data-exposure-hard.html')
 
 
 # Route for medium Vulnerability - User
@@ -309,6 +314,16 @@ def sensitive_data_exposure_low_admin_config():
     msg = "Here are the credentials for dev\n dev-user : BSYpUzIU0yDvvJ3"
 
     return render_template('vulnerabilities/sensitive-data-exposure-medium.html', msg=msg)
+
+
+# Route for Hard Vulnerability
+@app.route('/backups/card-db.bk', methods=['GET', 'POST'])
+@is_logged
+def sensitive_data_exposure_hard():
+    if request.method == 'POST' and '/sensitive-data-exposure' in request.headers.get('Referer'):
+        return send_from_directory(directory='backups', filename='card-db.bk')
+    else:
+        return redirect(url_for('sensitive_data_exposure'))
 
 
 # XML External Entities

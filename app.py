@@ -211,12 +211,15 @@ def cmd_injection():
 
 
 # Business Logic Flaw
-@app.route('/business-logic')
+@app.route('/business-logic', methods=['POST', 'GET','HEAD'])
 @is_logged
 def business_logic():
     result = None
     if len(request.form) < 1:
-        return render_template('vulnerabilities/business-logic.html')
+        if session['level'] == 0:
+            return render_template('vulnerabilities/business-logic.html')
+        elif session['level'] == 1:
+            return render_template('vulnerabilities/business-logic-medium.html')
     else:
         username = request.form.get('username')
         password = request.form.get('password')
@@ -224,8 +227,14 @@ def business_logic():
 
         if session['level'] == 0:
             result = bl.business_logic_low(username=username, password=password)
+            return render_template('vulnerabilities/business-logic.html', msg=result)
 
-        return render_template('vulnerabilities/business-logic.html', msg=result)
+        elif session['level'] == 1:
+            if request.method == 'HEAD':
+                result = 'Success'
+            else:
+                result = 'Failed'
+            return render_template('vulnerabilities/business-logic-medium.html', msg=result)
 
 
 # Sensitive Data Exposure

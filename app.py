@@ -1,5 +1,7 @@
 # Imports
 from flask import Flask, render_template, request, session, redirect, url_for, send_from_directory
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from functools import wraps
 from random import randint
 from jinja2 import Environment
@@ -564,8 +566,22 @@ def brute_force():
         if session['level'] == 1:
             time.sleep(2.0)
             result = bf.brute_force_low(username=username, password=password)
+        if session['level'] == 2:
+            return redirect(url_for('brute_force_hard', username=username, password=password))
 
         return render_template('vulnerabilities/brute-force.html', msg=result)
+
+# Brute Force hard
+limiter = Limiter(app, key_func=get_remote_address)
+@app.route('/brute-force-hard', methods=['POST', 'GET'])
+@is_logged
+@limiter.limit("2/second")
+def brute_force_hard():
+    username = request.args.get('username')
+    password = request.args.get('password')
+    bf = BruteForce
+    result = bf.brute_force_low(username=username, password=password)
+    return render_template('vulnerabilities/brute-force.html', msg=result)
 
 
 # Directory traversal
@@ -581,7 +597,7 @@ def directory_traversal():
         elif session['level'] == 0:
             if image_name in ["cat", "dog", "monkey"]:
                 image_name = image_name + ".jpg"
-                path = os.path.join("/static/images", image_name)
+                path = os.path.join("/static/Images", image_name)
                 return render_template("vulnerabilities/directory-traversal.html", user_image=path)
             else:
                 try:
@@ -593,7 +609,7 @@ def directory_traversal():
         elif session['level'] == 1:
             if image_name in ["cat", "dog", "monkey"]:
                 image_name = image_name + ".jpg"
-                path = os.path.join("/static/images", image_name)
+                path = os.path.join("/static/Images", image_name)
                 return render_template("vulnerabilities/directory-traversal.html", user_image=path)
             elif "../" in image_name:
                 image_name = image_name.replace("../", "")

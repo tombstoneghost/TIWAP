@@ -26,7 +26,7 @@ UPLOAD_FOLDER = os.path.join(APP_ROOT, 'uploads')
 context = ('certificate/server.crt', 'certificate/server.key')
 
 # Initialize Flask
-app = Flask(__name__, static_folder='static', static_url_path='')
+app = Flask(__name__, static_folder='Static', static_url_path='')
 app.secret_key = 'l0G1n_53cR37_k3y'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -597,7 +597,7 @@ def directory_traversal():
         elif session['level'] == 0:
             if image_name in ["cat", "dog", "monkey"]:
                 image_name = image_name + ".jpg"
-                path = os.path.join("/static/Images", image_name)
+                path = os.path.join("/Images", image_name)
                 return render_template("vulnerabilities/directory-traversal.html", user_image=path)
             else:
                 try:
@@ -609,7 +609,7 @@ def directory_traversal():
         elif session['level'] == 1:
             if image_name in ["cat", "dog", "monkey"]:
                 image_name = image_name + ".jpg"
-                path = os.path.join("/static/Images", image_name)
+                path = os.path.join("/Images", image_name)
                 return render_template("vulnerabilities/directory-traversal.html", user_image=path)
             elif "../" in image_name:
                 image_name = image_name.replace("../", "")
@@ -627,13 +627,22 @@ def directory_traversal():
                 except FileNotFoundError:
                     return render_template("vulnerabilities/directory-traversal.html", msg="File not Found")
         elif session['level'] == 2:
-            try:
-                url = parse.unquote(image_name)
+            if image_name in ["cat", "dog", "monkey"]:
+                image_name = image_name + ".jpg"
+                path = os.path.join("/Images", image_name)
+                return render_template("vulnerabilities/directory-traversal.html", user_image=path)
 
-                f = open(url, 'r')
-                result = f.read()
+            elif '%' in image_name:
+                try:
+                    url = parse.unquote(image_name)
 
-            except error:
+                    f = open(url, 'r')
+                    result = f.read()
+
+                except error:
+                    result = "Try Harder"
+
+            else:
                 result = "Try Harder"
 
             return render_template('vulnerabilities/directory-traversal.html', msg=result)

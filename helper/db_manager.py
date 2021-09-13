@@ -58,7 +58,6 @@ class DBManager:
             return True
         return False
 
-
     def get_comments(self):
         self.create_db_connection()
         result = self.cur.execute("SELECT comment FROM comments")

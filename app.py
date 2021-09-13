@@ -245,7 +245,7 @@ def business_logic():
             else:
                 result = 'Failed... Try harder!!!'
             return render_template('vulnerabilities/business-logic-medium.html', msg=result)
-        
+
         elif session['level'] == 2:
             passwordn = request.form.get('passwordn')
             result = bl.business_logic_hard(username=username, passwordn=passwordn)
@@ -545,7 +545,6 @@ def insecure_file_upload():
             else:
                 result = "Try Harder!"
 
-
         return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
 
 
@@ -571,8 +570,11 @@ def brute_force():
 
         return render_template('vulnerabilities/brute-force.html', msg=result)
 
+
 # Brute Force hard
 limiter = Limiter(app, key_func=get_remote_address)
+
+
 @app.route('/brute-force-hard', methods=['POST', 'GET'])
 @is_logged
 @limiter.limit("2/second")
@@ -694,7 +696,7 @@ def ssrf():
         product = request.form.get('product')
 
         if session['level'] == 0:
-            requests.get('http://127.0.0.1:5000/api/stock/product?product='+product)
+            requests.get('http://127.0.0.1:5000/api/stock/product?product=' + product)
         elif session['level'] == 1:
             if "127.0.0.1" in product:
                 return render_template('vulnerabilities/ssrf.html', product=product, stock="NULL")
@@ -770,7 +772,6 @@ def after_request(response):
     response.headers['Content-Security-Policy'] = "script-src 'self' 'unsafe-inline'"
     return response
 '''
-
 
 # Execute Main
 if __name__ == '__main__':

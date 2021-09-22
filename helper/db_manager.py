@@ -106,3 +106,14 @@ class DBManager:
             return True
 
         return False
+
+    def reset_db(self):
+        self.create_db_connection()
+        with open('helper/sqlite_db_reset.txt') as f:
+            contents = f.readlines()
+
+        for content in contents:
+            self.cur.execute(content)
+
+        self.close_db_connection()
+        self.commit_db()

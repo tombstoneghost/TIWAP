@@ -1,0 +1,10 @@
+DROP TABLE comments
+DROP TABLE names
+CREATE TABLE comments ( comment TEXT )
+CREATE TABLE names ( name TEXT )
+INSERT INTO comments VALUES('This Project is so cool.')
+INSERT INTO comments VALUES('Having Fun with XSS.')
+INSERT INTO comments VALUES('This is hacked!')
+INSERT INTO names VALUES('Mark')
+INSERT INTO names VALUES('Jeff')
+INSERT INTO names VALUES('Sundar')

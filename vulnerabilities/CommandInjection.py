@@ -18,17 +18,21 @@ def cmd_injection_low(query):
 
 # Medium Vulnerability
 def cmd_injection_medium(query):
-    if (';' or '&&' or '||') in query:
-        message = "Input query blocked: " + query
-        return message
-    else:
-        return cmd_injection_low(query)
+    list = [';','&&','||']
+    for x in list:
+        if x in query:
+            message = "Input query blocked: " + query
+            return message
+
+    return cmd_injection_low(query)
 
 
 # Hard Vulnerability
 def cmd_injection_hard(query):
-    if ("&" or ";" or '| ' or '-' or '$' or '(' or ')' or '`' or '||') in query:
-        message = "Input query blocked: " + query
-        return message
-    else:
-        return cmd_injection_low(query)
+    list = ['&', ';', '|', '-', '$', '(', ')', '`', '||']
+    for x in list:
+        if x in query:
+            message = "Input query blocked: " + query
+            return message
+
+    return cmd_injection_low(query)

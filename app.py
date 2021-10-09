@@ -531,7 +531,7 @@ def insecure_file_upload():
             if uploaded_file.filename == '':
                 result = "No file selected!"
                 return render_template('vulnerabilities/insecure-file-upload.html', msg=result)
-            elif ext != 'img' or ext != 'jpg' or ext != 'jpeg' or ext != 'png':
+            elif ext != 'img' and ext != 'jpg' and ext != 'jpeg' and ext != 'png':
                 result = "File format not supported!"
             else:
                 full_filename = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)

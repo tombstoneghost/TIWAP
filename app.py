@@ -119,6 +119,7 @@ def settings():
 
         return render_template('settings.html', level=level, msg="Difficulty Set to " + level)
 
+
 # Reset DB
 @app.route('/reset-db')
 @is_logged
@@ -127,6 +128,7 @@ def reset_db():
     mongo_dbm.reset_db()
 
     return render_template('settings.html', msg="Database has been reset!")
+
 
 # SQL Injection
 @app.route('/sql-injection', methods=['POST', 'GET'])

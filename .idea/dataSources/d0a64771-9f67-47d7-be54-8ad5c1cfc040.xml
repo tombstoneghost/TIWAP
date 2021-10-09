@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="TIWAF.db">
-  <database-model serializer="dbm" dbms="SQLITE" family-id="SQLITE" format-version="4.20">
-    <root id="1">
-      <ServerVersion>3.34.0</ServerVersion>
-    </root>
+  <database-model serializer="dbm" dbms="SQLITE" family-id="SQLITE" format-version="4.23">
+    <root id="1"/>
     <schema id="2" parent="1" name="main">
       <Current>1</Current>
     </schema>

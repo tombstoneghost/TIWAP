@@ -8,9 +8,10 @@ class DBManager:
         # Initialize Database
         self.conn = None
         self.cur = None
+        self.create_db_connection()
 
     def create_db_connection(self):
-        self.conn = sqlite3.connect('TIWAF.db', check_same_thread=False)
+        self.conn = sqlite3.connect('TIWAP.db', check_same_thread=False)
         self.cur = self.conn.cursor()
 
     def get_db_connection(self):

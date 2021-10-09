@@ -1,6 +1,7 @@
 # Imports
 from helper.mongodb_manager import MongoDBManager
 
+# Global Objects
 mongo_dbm = MongoDBManager()
 
 

@@ -18,8 +18,8 @@ def cmd_injection_low(query):
 
 # Medium Vulnerability
 def cmd_injection_medium(query):
-    list = [';','&&','||']
-    for x in list:
+    filters = [';', '&&', '||']
+    for x in filters:
         if x in query:
             message = "Input query blocked: " + query
             return message
@@ -29,8 +29,8 @@ def cmd_injection_medium(query):
 
 # Hard Vulnerability
 def cmd_injection_hard(query):
-    list = ['&', ';', '|', '-', '$', '(', ')', '`', '||']
-    for x in list:
+    filters = ['&', ';', '|', '-', '$', '(', ')', '`', '||']
+    for x in filters:
         if x in query:
             message = "Input query blocked: " + query
             return message

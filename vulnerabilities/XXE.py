@@ -21,6 +21,6 @@ def xxe_low(data):
 # Medium Vulnerability
 def xxe_medium(data):
     decode_data = base64.b64decode(data)
-    data = unquote(decode_data)
+    data = unquote(str(decode_data))
 
     return xxe_low(data=data)

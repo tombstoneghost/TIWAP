@@ -7,7 +7,7 @@ from random import randint
 from jinja2 import Environment
 from urllib import parse, error
 from helper import functioning
-from helper.jwt import JWT
+from helper.auth import Auth
 from helper.db_manager import DBManager
 from helper.mongodb_manager import MongoDBManager
 from vulnerabilities import SQLi, CommandInjection, BusinessLogic, XXE, XSS, BruteForce, NoSQL, HTMLInjection
@@ -30,8 +30,11 @@ app = Flask(__name__, static_folder='Static', static_url_path='')
 app.secret_key = 'l0G1n_53cR37_k3y'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# Limiter
+limiter = Limiter(app, key_func=get_remote_address)
+
 # Global Classes/Functions
-jwt = JWT()
+jwt = Auth()
 dbm = DBManager()
 mongo_dbm = MongoDBManager()
 funcs = functioning
@@ -581,10 +584,7 @@ def brute_force():
         return render_template('vulnerabilities/brute-force.html', msg=result)
 
 
-# Brute Force hard
-limiter = Limiter(app, key_func=get_remote_address)
-
-
+# Brute Force Hard
 @app.route('/brute-force-hard', methods=['POST', 'GET'])
 @is_logged
 @limiter.limit("2/second")

@@ -1,8 +1,9 @@
+# Imports
 import jwt
 from datetime import datetime, timedelta
 
 
-class JWT:
+class Auth:
     __SECRET_KEY = '7H15_i5_@_s3cr37_k3Y'
 
     def encode_auth_token(self, username):

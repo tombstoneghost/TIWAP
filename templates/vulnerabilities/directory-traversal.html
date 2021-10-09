@@ -5,25 +5,25 @@
         <h1 id="vuln-name">Directory traversal</h1>
     </div>
     <div class="mt-3 container text-center">
-            <form method="get" action="/directory-traversal">
-                <div style="margin-left: 35%">
-                    <div class="mb-3 row">
-                        <label for="username" class="col-auto col-form-label">Enter name of an image</label>
-                        <div class="col-auto">  
-                            <input type="text" class="form-control" id="image" name="image">
-                        </div>
+        <form method="get" action="/directory-traversal">
+            <div style="margin-left: 35%">
+                <div class="mb-3 row">
+                    <label for="username" class="col-auto col-form-label">Enter name of an image</label>
+                    <div class="col-auto">
+                        <label for="image">
+                        </label><input type="text" class="form-control" id="image" name="image">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-success">Submit</button>
-            </form>
-        </div>
-        <h6 class="text-center text-muted mt-3">Can you find the file named secrets.enc in secret directory?</h6>
-        {% if user_image %}
-        <img class="center-block" src="{{ user_image }}" alt="User Image" height="250px" width="300px">
-        {% endif %}
-        {% if msg %}
-        <h6 class="text-center text-muted mt-3">{{ msg }}</h6>
-        {% endif %}
+            </div>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
     </div>
+    <h6 class="text-center text-muted mt-3">Can you find the file named secrets.enc in secret directory?</h6>
+    {% if user_image %}
+    <img class="center-block" src="{{ user_image }}" alt="User Image" height="250px" width="300px">
+    {% endif %}
+    {% if msg %}
+    <h6 class="text-center text-muted mt-3">{{ msg }}</h6>
+    {% endif %}
 </div>
 {% endblock %}

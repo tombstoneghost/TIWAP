@@ -1,5 +1,5 @@
+# Imports
 from pymongo import MongoClient
-import pymongo
 
 # Global Variables
 client = MongoClient("mongodb://localhost:27017/")

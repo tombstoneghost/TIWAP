@@ -121,7 +121,7 @@ def blind_sqli_hard(usernameid):
         stmt = "SELECT userid, username FROM users WHERE userid='%s'" % (str(usernameid))
 
         result = cur.execute(stmt)
-    except sqlite3.OperationalError as e:
+    except sqlite3.OperationalError:
         return ""
 
     return result.fetchall()

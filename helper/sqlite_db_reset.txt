@@ -1,10 +1,23 @@
 DROP TABLE comments
 DROP TABLE names
+DROP TABLE users
 CREATE TABLE comments ( comment TEXT )
 CREATE TABLE names ( name TEXT )
+CREATE TABLE users ( userid INTEGER, username TEXT, password TEXT, authenticated INTEGER DEFAULT 0, firstname TEXT, lastname TEXT )
 INSERT INTO comments VALUES('This Project is so cool.')
 INSERT INTO comments VALUES('Having Fun with XSS.')
 INSERT INTO comments VALUES('This is hacked!')
 INSERT INTO names VALUES('Mark')
 INSERT INTO names VALUES('Jeff')
 INSERT INTO names VALUES('Sundar')
+INSERT INTO users VALUES('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', '0', 'admin', 'admin')
+INSERT INTO users VALUES('2', 'johndoe', NULL, '0', 'John', 'Doe')
+INSERT INTO users VALUES('3', 'chavaAlice', NULL, '0', 'Alice', 'Chava')
+INSERT INTO users VALUES('4', 'JenAlex', NULL, '0', 'Jennifer', 'Alexander')
+INSERT INTO users VALUES('5', 'pconnor', NULL, '0', 'Phoebe', 'Connor')
+
+
+
+
+
+

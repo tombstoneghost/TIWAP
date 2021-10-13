@@ -2,7 +2,7 @@
 from pymongo import MongoClient
 
 # Global Variables
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient("mongodb://username:password@localhost:27017/")
 
 
 class MongoDBManager:

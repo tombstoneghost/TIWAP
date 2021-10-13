@@ -8,7 +8,7 @@ app:
   links:
     - db
 db:
-  image: mongo:latest
+  image: mongo:4.4
   hostname: localhost
   environment:
     - MONGO_INITDB_DATABASE=TIWAP

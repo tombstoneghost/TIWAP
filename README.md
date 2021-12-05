@@ -5,6 +5,8 @@ vulnerabilities. Inspired by DVWA, the contributors have tried their best to reg
 
 The application is solely made for educational purpose and to learn web hacking in a legal environment. 
 
+Read more about it [here](https://singh-simardeepsingh99.medium.com/tiwap-3a8b70043ce9)
+
 ## Disclaimer
 
 We highly recommend installing the lab on a Virtual Machine instead of a live web server (Internal or External).

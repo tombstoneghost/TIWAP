@@ -1,5 +1,14 @@
 # Totally Insecure Web Application Project (TIWAP)
 
+![Forks](https://img.shields.io/github/forks/tombstoneghost/TIWAP?style=for-the-badge)
+![Stars](https://img.shields.io/github/stars/tombstoneghost/TIWAP?style=for-the-badge)
+![OpenIssues](https://img.shields.io/github/issues/tombstoneghost/TIWAP?style=for-the-badge)
+![ClosedIssues](https://img.shields.io/github/issues-closed/tombstoneghost/TIWAP?style=for-the-badge)
+![Languages](https://img.shields.io/github/languages/count/tombstoneghost/TIWAP?style=for-the-badge)
+![License](https://img.shields.io/github/license/tombstoneghost/TIWAP?style=for-the-badge)
+
+
+
 TIWAP is a web security testing lab made using Flask for budding security enthusiasts to learn about various web 
 vulnerabilities. Inspired by DVWA, the contributors have tried their best to regenerate various web vulnerabilities
 

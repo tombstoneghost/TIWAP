@@ -1,4 +1,5 @@
 # Imports
+from crypt import methods
 from flask import Flask, render_template, request, session, redirect, url_for, send_from_directory
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -198,15 +199,16 @@ def no_sql_injection():
     if len(request.form) < 1:
         if session['level'] == 2:
             return render_template('vulnerabilities/under-construction.html')
-        data = mongo_dbm.get_data_all()
-        return render_template('vulnerabilities/no-sql-injection.html', data=data, level=session['level'])
+        return render_template('vulnerabilities/no-sql-injection.html', level=session['level'])
     else:
-        query = request.form.get('car')
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
         nosqli = NoSQL
 
         if session['level'] == 0 or session['level'] == 1:
-            data = nosqli.no_sql_injection_low(query)
-            return render_template('vulnerabilities/no-sql-injection.html', data=data, level=session['level'])
+            data = nosqli.no_sql_injection_low(username=username, password=password)
+            return render_template('vulnerabilities/no-sql-injection.html', msg=data, level=session['level'])
         else:
             return render_template('vulnerabilities/under-construction.html')
 
@@ -375,6 +377,11 @@ def xxe_index():
 
         return result, {'Content-Type': 'application/xml; charset=UTF-8'}
 
+# Security Misconfiguration
+@app.route('/security-misconfig', methods=['GET'])
+@is_logged
+def security_misconfig():
+    return "The complete application has many misconfigurations, this page is just an example of it."
 
 # Reflected XSS
 @app.route('/reflected-xss', methods=['POST', 'GET'])

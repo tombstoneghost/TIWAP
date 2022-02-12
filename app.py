@@ -269,10 +269,10 @@ def business_logic():
 
 # Sensitive Data Exposure
 # Index Page
-@app.route('/sensitive-data-exposure')
+@app.route('/sensitive-data-exposure', methods=['GET', 'POST'])
 @is_logged
 def sensitive_data_exposure():
-    if len(request.form) or len(request.args) < 1:
+    if len(request.form) < 1 and len(request.args) < 1:
         if session['level'] == 0:
             return render_template('vulnerabilities/sensitive-data-exposure-low.html')
         if session['level'] == 1:
@@ -284,10 +284,11 @@ def sensitive_data_exposure():
             username = request.form.get('username')
             password = request.form.get('password')
             result = "Incorrect Username or Password"
+
             if username == "adM1n1sTrat0R" and password == "123P4ssW0rd@@":
                 result = "Logged in successfully as an Admin"
 
-            return render_template('vulnerabilities/sensitive-data-exposure-low.html', msg=result)
+            return render_template('vulnerabilities/sensitive-data-exposure-low.html',msg=result)
         elif session['level'] == 1:
             return redirect(url_for('sensitive_data_exposure_low_user'))
 
@@ -296,7 +297,7 @@ def sensitive_data_exposure():
 
 
 # Route for medium Vulnerability - User
-@app.route('/sensitive-data-exposure/user')
+@app.route('/sensitive-data-exposure/user', methods=['GET', 'POST'])
 @is_logged
 def sensitive_data_exposure_low_user():
     if len(request.args) < 1:
@@ -313,7 +314,7 @@ def sensitive_data_exposure_low_user():
 
 
 # Route for medium Vulnerability - Admin
-@app.route('/sensitive-data-exposure/admin/')
+@app.route('/sensitive-data-exposure/admin/', methods=['GET', 'POST'])
 @is_logged
 def sensitive_data_exposure_low_admin():
     if len(request.args) < 1:
@@ -330,7 +331,7 @@ def sensitive_data_exposure_low_admin():
 
 
 # Route for medium Vulnerability - Admin
-@app.route('/sensitive-data-exposure/admin/config')
+@app.route('/sensitive-data-exposure/admin/config', methods=['GET', 'POST'])
 @is_logged
 def sensitive_data_exposure_low_admin_config():
     if len(request.args) < 1:

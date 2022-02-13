@@ -40,6 +40,7 @@
             dataType: "xml",
             async: false,
             success: function (result) {
+                console.log(result);
                 result = result.getElementsByTagName("result")[0].getElementsByTagName("msg");
                 let msg = result[0].childNodes[0].nodeValue;
                 $(".msg").text(msg);

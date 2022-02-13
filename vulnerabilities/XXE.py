@@ -13,7 +13,7 @@ def xxe_low(data):
         if child.tag == "name":
             name = "Hey! " + child.text
 
-    result = "<result><msg>%s</msg><result>" % name
+    result = "<result><msg>%s</msg></result>" % name
 
     return result
 

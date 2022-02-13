@@ -714,15 +714,15 @@ def ssrf():
         product = request.form.get('product')
 
         if session['level'] == 0:
-            requests.get('http://127.0.0.1:5000/api/stock/product?product=' + product)
+            requests.get('https://0.0.0.0:5001/api/stock/product?product=' + product, verify=False)
         elif session['level'] == 1:
-            if "127.0.0.1" in product:
+            if "0.0.0.0" in product:
                 return render_template('vulnerabilities/ssrf.html', product=product, stock="NULL")
             else:
-                requests.get('http://127.0.0.1:5000/api/stock/product?product=' + product)
+                requests.get('https://0.0.0.0:5001/api/stock/product?product=' + product, verify=False)
         elif session['level'] == 2:
             if "0000:0000:0000:0000:0000:ffff:7f00:0001" in product:
-                requests.get('http://127.0.0.1:5000/api/stock/product?product=' + product)
+                requests.get('http://0.0.0.0:5001/api/stock/product?product=' + product, verify=False)
             else:
                 return render_template('vulnerabilities/ssrf.html', product=product, stock="NULL")
 
@@ -730,7 +730,8 @@ def ssrf():
 
 
 # API to check stock
-@app.route('/api/stock/product', methods=['GET', 'POST'])
+@app.route('/api/stock/product', methods=['GET'])
+@is_logged
 def check_stock():
     if len(request.args) < 1:
         return redirect(url_for('ssrf'))

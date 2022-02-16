@@ -1,6 +1,6 @@
 app:
   build: .
-  command: python app.py
+  command: python3 app.py
   ports:
     - "5001:5001"
   volumes:

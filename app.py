@@ -740,10 +740,12 @@ def check_stock():
         product = request.args.get('product')
 
         if session['level'] == 1 or session['level'] == 2:
-            product = product.split("&")[1]
+            if len(product.split("@")) > 1:
+                product = product.split("@")[1]
 
         try:
-            return requests.get(product).content
+            data = requests.get(product).content
+            return data
         except requests.RequestException:
             pass
 
@@ -768,7 +770,7 @@ def ssti():
         if session['level'] == 0:
             msg = Jinja2.from_string('Hey, ' + str(name) + "!").render()
         elif session['level'] == 1:
-            filters = ["config", "self", "_", '"']
+            filters = ["config", "_", '"']
 
             for f in filters:
                 if f in name:

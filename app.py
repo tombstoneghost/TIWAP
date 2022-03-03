@@ -712,6 +712,7 @@ def ssrf():
         return render_template('vulnerabilities/ssrf.html')
     else:
         product = request.form.get('product')
+        source = request.form.get('source')
 
         if session['level'] == 0:
             requests.get('https://0.0.0.0:5001/api/stock/product?product=' + product, verify=False)
@@ -721,8 +722,8 @@ def ssrf():
             else:
                 requests.get('https://0.0.0.0:5001/api/stock/product?product=' + product, verify=False)
         elif session['level'] == 2:
-            if "0000:0000:0000:0000:0000:ffff:7f00:0001" in product:
-                requests.get('http://0.0.0.0:5001/api/stock/product?product=' + product, verify=False)
+            if "internal" in source:
+                requests.get('https://0.0.0.0:5001/api/stock/product?product=' + product, verify=False)
             else:
                 return render_template('vulnerabilities/ssrf.html', product=product, stock="NULL")
 
@@ -733,6 +734,7 @@ def ssrf():
 @app.route('/api/stock/product', methods=['GET'])
 @is_logged
 def check_stock():
+    print("Here")
     if len(request.args) < 1:
         return redirect(url_for('ssrf'))
 
@@ -779,9 +781,7 @@ def ssti():
 
             msg = Jinja2.from_string('Hey, ' + str(name) + "!").render()
         elif session['level'] == 2:
-            name = base64.b64decode(name)
-
-            msg = Jinja2.from_string('Hey, ' + str(name) + "!").render()
+            return render_template('vulnerabilities/under-construction.html')
 
         return render_template('vulnerabilities/ssti.html', msg=msg)
 

@@ -29,7 +29,7 @@ def cmd_injection_medium(query):
 
 # Hard Vulnerability
 def cmd_injection_hard(query):
-    filters = ['&', ';', '|', '-', '$', '(', ')', '`', '||']
+    filters = ['& ', ';', '|', '-', '$', '(', ')', '`', '||']
     for x in filters:
         if x in query:
             message = "Input query blocked: " + query

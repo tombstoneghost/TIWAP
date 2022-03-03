@@ -28,7 +28,7 @@
 
         let data = "<user><name>" + name + "</name></user>";
 
-        {% if level == 1 %}
+        {% if level == 1 or level == 2 %}
             data = window.btoa(data)
         {% endif %}
 

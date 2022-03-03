@@ -7,6 +7,7 @@ from urllib.parse import unquote
 # Low Vulnerability
 def xxe_low(data):
     name = "Invalid"
+
     tree = etree.fromstring(data)
 
     for child in tree:
@@ -22,5 +23,7 @@ def xxe_low(data):
 def xxe_medium(data):
     decode_data = base64.b64decode(data)
     data = unquote(str(decode_data))
+    if data.startswith("b'") and data.endswith("'"):
+        data = data[2:-1]
 
     return xxe_low(data=data)

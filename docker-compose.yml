@@ -1,7 +1,7 @@
 version: "2"
 services:
   app:
-    build: ./app
+    build: .
     ports:
       - "5000:5000"
     volumes:

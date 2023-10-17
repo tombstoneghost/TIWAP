@@ -5,7 +5,7 @@ from hashlib import md5
 import json
 
 # Global Variables
-client = MongoClient("mongodb://username:password@localhost:27017/?authMechanism=DEFAULT", connectTimeoutMS=60000, connect=False)
+client = MongoClient("mongodb://username:password@db:27017/?authMechanism=DEFAULT", connectTimeoutMS=60000, connect=False)
 
 
 class MongoDBManager:

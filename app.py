@@ -206,8 +206,15 @@ def no_sql_injection():
         
         nosqli = NoSQL
 
-        if session['level'] == 0 or session['level'] == 1:
+        if session['level'] == 0:
             data = nosqli.no_sql_injection_low(username=username, password=password)
+            return render_template('vulnerabilities/no-sql-injection.html', msg=data, level=session['level'])
+        elif session['level'] == 1:
+            filters = ["gt", "ne"]
+            if any(f in username for f in filters):
+                data = "Invalid Credentials"
+            else:
+                data = nosqli.no_sql_injection_medium(username=username, password=password)
             return render_template('vulnerabilities/no-sql-injection.html', msg=data, level=session['level'])
         else:
             return render_template('vulnerabilities/under-construction.html')

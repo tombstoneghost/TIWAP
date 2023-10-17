@@ -1,20 +1,20 @@
-app:
-  build: .
-  command: python3 app.py
-  ports:
-    - "5001:5001"
-  volumes:
-    - .:/app
-  links:
-    - db
-db:
-  image: mongo:4.4
-  hostname: localhost
-  environment:
-    - MONGO_INITDB_DATABASE=TIWAP
-    - MONGO_INITDB_ROOT_USERNAME=username
-    - MONGO_INITDB_ROOT_PASSWORD=password
-  volumes:
-    - ./init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
-  ports:
-    - 27017:27017
+version: "2"
+services:
+  app:
+    build: ./app
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+  db:
+    image: "mongo:4.4"
+    environment:
+      - MONGO_INITDB_DATABASE=TIWAP
+      - MONGO_INITDB_ROOT_USERNAME=username
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - ./init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
+    ports:
+      - "27017:27017"

@@ -4,9 +4,8 @@ from hashlib import md5
 
 import json
 
-
 # Global Variables
-client = MongoClient("mongodb://username:password@localhost:27017/")
+client = MongoClient("mongodb://username:password@localhost:27017/?authMechanism=DEFAULT", connectTimeoutMS=60000, connect=False)
 
 
 class MongoDBManager:
@@ -28,13 +27,12 @@ class MongoDBManager:
         return data
 
     def reset_db(self):
-        db = client["TIWAP"]
-        col_1 = db["users"]
+        db = client.get_database("TIWAP")
+        collection = db.get_collection("users")
 
-        col_1.delete_many({})
+        collection.delete_many({})
 
+        dict_1 = {'username': 'admin', 'password': '21232f297a57a5a743894a0e4a801fc3'}
+        dict_2 = {'username': 'john', 'password': '6e0b7076126a29d5dfcbd54835387b7b'}
 
-        dict_1 = {'username':'admin','password':'21232f297a57a5a743894a0e4a801fc3'}
-        dict_2 = {'username':'john','password':'6e0b7076126a29d5dfcbd54835387b7b'}
-
-        col_1.insert_many([dict_1,dict_2])
+        collection.insert_many([dict_1, dict_2])

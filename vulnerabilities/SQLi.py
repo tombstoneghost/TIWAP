@@ -1,6 +1,8 @@
 # Imports
 import sqlite3
+
 from helper.db_manager import DBManager
+from hashlib import md5
 
 
 # Global Objects
@@ -125,3 +127,32 @@ def blind_sqli_hard(usernameid):
         return ""
 
     return result.fetchall()
+
+
+# Secure SQL Login
+def secure_login(username, password):
+    username = username.replace("'", "")
+    username = username.replace("\"", "")
+
+    password = password.replace("'", "")
+    password = password.replace("\"", "")
+
+    global dbmanager
+
+    cur = dbmanager.get_db_connection().cursor()
+
+    try:
+        result = cur.execute(f"SELECT username, password FROM users WHERE username=\"{username}\"")
+
+        if type(result) != 'NoneType':
+            data = cur.fetchone()
+            password_db = data[1]
+
+            password = md5(bytes(password, encoding='utf-8')).hexdigest()
+
+            # Check Passwords
+            if password == password_db:
+                return True
+    
+    except Exception as e:
+        return False

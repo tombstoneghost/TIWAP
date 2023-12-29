@@ -1,6 +1,5 @@
 # Imports
-from crypt import methods
-from flask import Flask, render_template, request, session, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, session, redirect, url_for, send_from_directory, make_response
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from functools import wraps
@@ -11,11 +10,10 @@ from helper import functioning
 from helper.auth import Auth
 from helper.db_manager import DBManager
 from helper.mongodb_manager import MongoDBManager
-from vulnerabilities import SQLi, CommandInjection, BusinessLogic, XXE, XSS, BruteForce, NoSQL, HTMLInjection
+from vulnerabilities import SQLi, CommandInjection, BusinessLogic, XXE, XSS, BruteForce, NoSQL, HTMLInjection, InsecureDeserialization
 
 import os
 import requests
-import base64
 import time
 import binascii
 
@@ -800,6 +798,112 @@ def after_request(response):
     response.headers['Content-Security-Policy'] = "script-src 'self' 'unsafe-inline'"
     return response
 '''
+
+
+# JWT Token
+@app.route('/jwt-tokens', methods=['POST', 'GET'])
+@is_logged
+def jwt_tokens():
+    if request.method == 'GET':
+        if session['level'] == 2:
+            return render_template('vulnerabilities/under-construction.html')
+        
+        msg = ""
+
+        if "jwt_token" in request.cookies.keys():
+            if session['level'] == 0:
+                username = jwt.decode_insecure_auth_token(request.cookies.get('jwt_token'))
+                msg = f"Welcome {username}"
+            elif session['level'] == 1:
+                username = jwt.decode_weak_auth_token(request.cookies.get('jwt_token'))
+                msg = f"Welcome {username}"
+
+        return render_template('vulnerabilities/jwt-tokens.html', level=session['level'], msg=msg)
+    elif request.method == 'POST':
+        msg = ""
+
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        sqli = SQLi
+        jwt_token = ""
+
+        if session['level'] == 0:
+            if sqli.secure_login(username=username, password=password):
+                jwt_token = jwt.insecure_auth_token(username=username)
+                msg = f"Welcome {username}"
+            else:
+                msg = "Invalid Credentials"
+        elif session['level'] == 1:
+            if sqli.secure_login(username=username, password=password):
+                jwt_token = jwt.weak_auth_token(username=username)
+                msg = f"Welcome {username}"
+            else:
+                msg = "Invalid Credentials"
+        elif session['level'] == 2:
+            return render_template('vulnerabilities/under-construction.html')
+
+        resp = make_response(render_template('vulnerabilities/jwt-tokens.html', msg=msg, level=session['level']))
+        if jwt_token != "":
+            resp.set_cookie('jwt_token', jwt_token)
+
+        return resp
+
+
+# Insecure Deserialization
+@app.route("/insecure-deserialization", methods=['GET', 'POST'])
+@is_logged
+def insecure_deserialization():
+    if request.method == 'GET':
+        cookie_present = False
+        serialization_cookie = "null"
+
+        if 'user_cookie' in request.cookies.keys():
+            serialization_cookie = request.cookies['user_cookie']
+            cookie_present = True
+
+        deserial = InsecureDeserialization
+
+        if session['level'] == 0:
+            if cookie_present:
+                user = deserial.deserialize_low(serialization_cookie)['user']
+            else:
+                user = jwt.decode_auth_token(session['auth'])['sub']
+
+                data = {'user': user}
+
+                serialization_cookie = deserial.serialize_low(data)
+
+
+            resp = make_response(render_template("vulnerabilities/insecure-deserialization.html", level=session['level'], user=user))
+        
+            resp.set_cookie('user_cookie', serialization_cookie)
+
+            return resp
+
+
+        if session['level'] == 1:
+            if cookie_present:
+                user = deserial.deserialize_medium(serialization_cookie)['user']
+            else:
+                user = jwt.decode_auth_token(session['auth'])['sub']
+
+                data = {'user': user}
+
+                serialization_cookie = deserial.serialize_medium(data)
+
+
+            resp = make_response(render_template("vulnerabilities/insecure-deserialization.html", level=session['level'], user=user))
+        
+            resp.set_cookie('user_cookie', serialization_cookie)
+
+            return resp
+        
+        if session['level'] == 2:
+            return render_template('vulnerabilities/under-construction.html')
+
+        return render_template("vulnerabilities/insecure-deserialization.html", level=session['level'])
+
 
 # Execute Main
 if __name__ == '__main__':

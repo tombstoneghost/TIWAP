@@ -9,18 +9,18 @@
             <form method="post" action="/sql-injection">
                 <div style="margin-left: 35%">
                     {% if level == 0 %}
-                    <div class="mb-3 row">
-                        <label for="username" class="col-auto col-form-label">Username</label>
-                        <div class="col-auto">
-                            <input type="text" class="form-control" id="username" name="username">
+                        <div class="mb-3 row">
+                            <label for="username" class="col-auto col-form-label">Username</label>
+                            <div class="col-auto">
+                                <input type="text" class="form-control" id="username" name="username">
+                            </div>
                         </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <label for="password" class="col-auto col-form-label" style="margin-right: 5px">Password</label>
-                        <div class="col-auto">
-                            <input type="password" class="form-control" id="password" name="password">
+                        <div class="mb-3 row">
+                            <label for="password" class="col-auto col-form-label" style="margin-right: 5px">Password</label>
+                            <div class="col-auto">
+                                <input type="password" class="form-control" id="password" name="password">
+                            </div>
                         </div>
-                    </div>
                     {% endif %}
                     {% if level == 1 %}
                         <div class="row" style="margin-left: 15%">

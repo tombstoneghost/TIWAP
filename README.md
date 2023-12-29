@@ -49,7 +49,7 @@ Databases: SQLite3 and MongoDB
 
 ## Vulnerabilities
 
-Currently, we have 20 vulnerabilities in the lab. All listed below:
+Currently, we have 22 vulnerabilities in the lab. All listed below:
 
 - SQL Injection
 - Blind SQL Injection
@@ -71,6 +71,8 @@ Currently, we have 20 vulnerabilities in the lab. All listed below:
 - Cross-Site Request Forgery (CSRF)
 - Server-Side Request Forgery (SSRF)
 - Server-Side Template Injection (SSTI)
+- JWT Token
+- Insecure Deserialization
 
 Each vulnerability is having 3 difficulty levels, namely Low, Medium and Hard. 
 These levels can be set from the settings page.
@@ -87,6 +89,7 @@ https://github.com/tombstoneghost/TIWAP/issues
 1. Simardeep Singh - [LinkedIn](https://www.linkedin.com/in/simardeepsingh99/) | [Twitter](https://twitter.com/simardeep99)
 2. Yash Giri -  [LinkedIn](https://www.linkedin.com/in/yashgiri/)
 3. Sakshi Aggarwal - [LinkedIn](https://www.linkedin.com/in/s4ksh1/) | [Twitter](https://twitter.com/s4ksh1)
+4. Xavier Llauca - [GitHub](https://github.com/xllauca)
 
 ### Want to be a contributor? 
 
